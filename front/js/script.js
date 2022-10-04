@@ -7,11 +7,11 @@ function addProducts(canapés) {
   canapés.forEach((canapés) => {
     
     const { _id, imageUrl, altTxt, name, description } = canapés
-    const anchor = ajoutAnchor(_id)
+    const anchor =  addAnchor(_id)
     const article = document.createElement("article")
-    const image = ajoutImage(imageUrl, altTxt)
-    const h3 = ajoutTitre(name)
-    const p = ajoutDescription(description) 
+    const image =   addImage(imageUrl, altTxt)
+    const h3 =  addTitre(name)
+    const p =   addDescription(description) 
     
     appendElementsToArticle(article, image, h3, p)
     appendArticleToAnchor(anchor, article)
@@ -24,7 +24,7 @@ function appendElementsToArticle(article, image, h3, p) {
   article.appendChild(p)
 }
 
-function ajoutAnchor(id) {
+function addAnchor(id) {
   const anchor = document.createElement("a")
   anchor.href = "./product.html?id=" + id
     return anchor
@@ -38,7 +38,7 @@ function appendArticleToAnchor(anchor, article) {
   }
 }
 
-function ajoutImage(imageUrl, altTxt) {
+function addImage(imageUrl, altTxt) {
   const image = document.createElement("img")
   image.src = imageUrl
   image.alt = altTxt
@@ -47,14 +47,14 @@ function ajoutImage(imageUrl, altTxt) {
     return image
 }
 
-function ajoutTitre(name) {
+function addTitre(name) {
   const h3 = document.createElement("h3")
   h3.textContent = name
   h3.classList.add("productNaame")
     return h3
-
 }
-function ajoutDescription(description) {
+
+function addDescription(description) {
   const p = document.createElement("p")
   p.textContent = description
   p.classList.add("productDescription")
