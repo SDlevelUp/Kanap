@@ -68,5 +68,16 @@ function addColors(colors) {
     }
 }
 
+// Ajout de l'évènement de click pour ajouter les produits au panier via le boutton
     
+const button = document.querySelector("#addToCart")
+button.addEventListener('click', (event) => {
+    const color = document.querySelector("#colors").value
+    const quantity = document.querySelector("#quantity").valeur
+        if(color == null || quantity == null)
+            alert("Choisissez une quantité et une couleur !")
+}
+
+
+
     
