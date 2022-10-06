@@ -11,7 +11,6 @@ function manipPanier(canapé) {
     addTitle(name)
     addPrice(price)
     addDescription(description)
-    addColors(colors)
 }
 
 function addImage(imageUrl, altTxt) {
@@ -44,19 +43,5 @@ function addDescription(description) {
        p.textContent = description
     }
 }
-
-function addColors(colors) {
-    const select = document.querySelector("#colors")
-        if(select != null) {
-            colors.forEach((color) => {
-                const option = document.createElement('option')
-                option.value = color
-                option.textContent = color
-                select.appendChild(option)
-        })
-    }
-}
-
-
 
 
