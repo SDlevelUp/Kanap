@@ -50,7 +50,7 @@ function addImage(imageUrl, altTxt) {
 function addTitre(name) {
   const h3 = document.createElement("h3")
   h3.textContent = name
-  h3.classList.add("productNaame")
+  h3.classList.add("productName")
     return h3
 }
 

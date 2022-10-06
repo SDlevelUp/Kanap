@@ -13,7 +13,7 @@ fetch("http://localhost:3000/api/products/" + productId)
   .then((res) => manipPanier(res))
 
 
-// Création de la fonction pour ajouter la description des canapés au panier
+// Création de la fonction globale pour ajouter les canapés au panier
 
 function manipPanier(canapé) {
     const {altTxt, colors, description, imageUrl, name, price} = canapé
@@ -24,15 +24,19 @@ function manipPanier(canapé) {
     addColors(colors)
 }
 
+// Création de la fonction pour ajouter l'image des canapés
+
 function addImage(imageUrl, altTxt) {
     const image = document.createElement("img")
     image.src = imageUrl
     image.alt = altTxt
     const parent = document.querySelector(".item__img")
     if(parent != null) {
-    parent.appendChild(image)
+        parent.appendChild(image)
     }
 }
+
+// Création de la fonction pour ajouter le nom des canapés
 
 function addTitle(name) {
     const h1 = document.querySelector("#title")
@@ -41,19 +45,25 @@ function addTitle(name) {
     }
 }
   
+// Création de la fonction pour ajouter le prix des canapés
+
 function addPrice(price) {
     const span = document.querySelector("#price")
     if(span != null) {
        span.textContent = price
     }
 }
-  
+
+// Création de la fonction pour ajouter la description des canapés
+
 function addDescription(description) {
     const p = document.querySelector("#description")
     if(p != null) {
        p.textContent = description
     }
 }
+
+// Création de la fonction pour ajouter la couleur des canapés
 
 function addColors(colors) {
     const select = document.querySelector("#colors")
@@ -73,10 +83,12 @@ function addColors(colors) {
 const button = document.querySelector("#addToCart")
 button.addEventListener('click', (event) => {
     const color = document.querySelector("#colors").value
-    const quantity = document.querySelector("#quantity").valeur
-        if(color == null || quantity == null)
+    const quantity = document.querySelector("#quantity").value
+        if(color == null || color === "" || quantity == null || quantity == 0)
             alert("Choisissez une quantité et une couleur !")
-}
+    }
+)
+
 
 
 
