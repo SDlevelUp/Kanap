@@ -2,6 +2,9 @@
 let productId = new URL(window.location.href).searchParams.get('id')
     console.log(productId)
 
+    if(productId != null){
+        let itemPrice = 0
+    }
 
 // Utilisation de la méthode fetch qui permet d'exécuter des requêtes HTTP sans avoir besoin de recharger la page du navigateur
 
@@ -17,6 +20,7 @@ fetch("http://localhost:3000/api/products/" + productId)
 
 function manipPanier(canapé) {
     const {altTxt, colors, description, imageUrl, name, price} = canapé
+    itemPrice = price
     addImage(imageUrl, altTxt)
     addTitle(name)
     addPrice(price)
@@ -67,6 +71,8 @@ function addDescription(description) {
 
 function addColors(colors) {
     const select = document.querySelector("#colors")
+
+    // Ajout d'une condition si le select est null
     if(select != null) {
     colors.forEach((color) => {
         const option = document.createElement("option")
@@ -81,10 +87,22 @@ function addColors(colors) {
 // Ajout de l'évènement de click pour ajouter les produits au panier via le boutton
     
 const button = document.querySelector("#addToCart")
-button.addEventListener('click', (event) => {
+button.addEventListener("click", (event) => {
     const color = document.querySelector("#colors").value
     const quantity = document.querySelector("#quantity").value
-        if(color == null || color === "" || quantity == null || quantity == 0)
-            alert("Choisissez une quantité et une couleur !")
+
+    if(color == null || color === "" || quantity == null){
+        alert("Choisissez une quantité et une couleur !")
     }
-)
+    button.onclick = () => {
+        const manipPanier = {
+            id: productId,
+            color: color,
+            quantity: Number(quantity),
+            price: itemPrice
+        }
+            localStorage.setItem("manipPanier", JSON.stringify(manipPanier))
+            document.location.reload()
+            window.location.href = "cart.html"
+    }
+})
