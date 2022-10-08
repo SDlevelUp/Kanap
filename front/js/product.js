@@ -88,8 +88,3 @@ button.addEventListener('click', (event) => {
             alert("Choisissez une quantité et une couleur !")
     }
 )
-
-
-
-
-    
