@@ -104,5 +104,4 @@ button.addEventListener("click", (event) => {
             localStorage.setItem("manipPanier", JSON.stringify(manipPanier))
             document.location.reload()
             window.location.href = "cart.html"
-    }
 })
