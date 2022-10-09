@@ -16,7 +16,6 @@ fetch("http://localhost:3000/api/products/" + productId)
   .then((res) => res.json())
   .then((res) => manipPanier(res))
 
-
 // Création de la fonction globale pour ajouter les canapés au panier
 
 function manipPanier(canapé) {
@@ -118,7 +117,6 @@ function saveOrderToCart() {
     window.location.href = "cart.html"
 }
 
-
 function ifCartValid(color, quantity) {
     if(color == null || color === "" || quantity == null){
         alert("Choisissez une quantité entre 1 et 100 et une couleur !")
@@ -126,7 +124,6 @@ function ifCartValid(color, quantity) {
     }
 }
 // Fonction pour sauvegarder la partie cart
-
 
 
 
