@@ -1,17 +1,22 @@
 fetch("http://localhost:3000/api/products")
-  .then((res) => res.json())
-  .then((data) => addProducts(data))
+  .then((res) => {
+    return res.json()
+  })
+  .then((data) => {
+    return addProducts(data)
+  })
 
+  // Fonction pour appeler les produits
 function addProducts(canapés) {
-
+// Création d'une boucle pour récupérer chaque élément du tableau
   canapés.forEach((canapés) => {
-    
+    // Création d'une constante pour tout regrouper en une seule ligne
     const { _id, imageUrl, altTxt, name, description } = canapés
-    const anchor =  addAnchor(_id)
+    const anchor = addAnchor(_id)
     const article = document.createElement("article")
-    const image =   addImage(imageUrl, altTxt)
-    const h3 =  addTitre(name)
-    const p =   addDescription(description) 
+    const image = addImage(imageUrl, altTxt)
+    const h3 = addTitre(name)
+    const p = addDescription(description) 
     
     appendElementsToArticle(article, image, h3, p)
     appendArticleToAnchor(anchor, article)
