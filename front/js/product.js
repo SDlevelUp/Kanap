@@ -88,21 +88,24 @@ function addColors(colors) {
     option.value = color
     option.textContent = color
     select.appendChild(option)
-    console.log(color)
         })
     }
 }
 
-// Récupération des données sélectionnées par l'utilisateur +  envoie au panier
+// Constante qui va lire les des données 
 const button = document.querySelector("#addToCart")
-if(button != null)
     button.addEventListener("click", (event) => {
         const color = document.querySelector("#colors").value
         const quantity = document.querySelector("#quantity").value
-        if(color == null || color === "" || quantity == null) {
-            alert("Choisissez une couleur et une quantité entre 1 et 100")
-            return
-    }
+
+        //Si c'est vide, message d'erreur
+        if(commandNotValid(color, quantity)) return
+        sauvegardeCommande(color, quantity)
+        window.location.href = "cart.html"
+    })
+
+// Fonction pour sauvegarder la dommande dans le fichier panier
+function sauvegardeCommande(color, quantity){ 
     const manipPanier = {
         id: productId,
         color: color,
@@ -111,11 +114,17 @@ if(button != null)
         imageUrl: imgUrl, 
         altTxt: altText
     }
-    // Envoie au localStorage des éléments es canapés
+    // Envoie au localStorage des éléments des canapés
     localStorage.setItem(productId, JSON.stringify(manipPanier))
     document.location.reload()
-    window.location.href = "cart.html"
-    })
+}
+
+// Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quanto+ité = 0
+function commandNotValid(color, quantity){
+    if(color == null || color === "" || quantity == null) {
+        alert("Choisissez une couleur et une quantité entre 1 et 100")
+        return true
+    }
+}
 
 
-    
