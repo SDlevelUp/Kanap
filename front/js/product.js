@@ -95,9 +95,27 @@ function addColors(colors) {
 
 // Récupération des données sélectionnées par l'utilisateur +  envoie au panier
 const button = document.querySelector("#addToCart")
-button.addEventListener("click", (event) => {
-    const color = document.querySelector("#colors").value
-    const quantity = document.querySelector("#quantity").value
-    ifCartValid(color, quantity)
-    saveOrderToCart(color, quantity)
-})
+if(button != null)
+    button.addEventListener("click", (event) => {
+        const color = document.querySelector("#colors").value
+        const quantity = document.querySelector("#quantity").value
+        if(color == null || color === "" || quantity == null) {
+            alert("Choisissez une couleur et une quantité entre 1 et 100")
+            return
+    }
+    const manipPanier = {
+        id: productId,
+        color: color,
+        quantity: Number(quantity),
+        price: itemPrice,
+        imageUrl: imgUrl, 
+        altTxt: altText
+    }
+    // Envoie au localStorage des éléments es canapés
+    localStorage.setItem(productId, JSON.stringify(manipPanier))
+    document.location.reload()
+    window.location.href = "cart.html"
+    })
+
+
+    
