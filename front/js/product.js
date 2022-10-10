@@ -101,33 +101,3 @@ button.addEventListener("click", (event) => {
     ifCartValid(color, quantity)
     saveOrderToCart(color, quantity)
 })
-    // Constante et Fonction pour récupérer les éléments du canapé et les injecter
-    
-function saveOrderToCart() {
-    const manipPanier = {
-        id: productId,
-        color: color,
-        quantity: Number(quantity),
-        imageUrl: imgUrl, 
-        altTxt: altText,
-        price: itemPrice
-    }
-    localStorage.setItem(productId, JSON.stringify(manipPanier))
-    document.location.reload()
-    window.location.href = "cart.html"
-}
-
-function ifCartValid(color, quantity) {
-    if(color == null || color === "" || quantity == null){
-        alert("Choisissez une quantité entre 1 et 100 et une couleur !")
-        return
-    }
-}
-// Fonction pour sauvegarder la partie cart
-
-
-
-// On sélectionne l'ID du formulaire
-
-//const formulaire = document.querySelector(".cart__order__form__question")
-//console.log(formulaire)
