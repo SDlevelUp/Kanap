@@ -4,7 +4,7 @@ let productId = new URL(window.location.href).searchParams.get('id')
 
     if(productId != null){
         let itemPrice = 0
-        let imgUrl, altText
+        let imgUrl, altText, productName
     }
 
 // Utilisation de la méthode fetch qui permet d'exécuter des requêtes HTTP sans avoir besoin de recharger la page du navigateur
@@ -22,9 +22,9 @@ function manipPanier(canapé) {
     // Constante pour afficher les éléments global du panier
     const {altTxt, colors, description, imageUrl, name, price} = canapé
     itemPrice = price
-    imgUrl = imageUrl;
+    imgUrl = imageUrl
     altText = altTxt
-
+    productName = name
     addImage(imageUrl, altTxt)
     addTitle(name)
     addPrice(price)
@@ -112,11 +112,11 @@ function sauvegardeCommande(color, quantity){
         quantity: Number(quantity),
         price: itemPrice,
         imageUrl: imgUrl, 
-        altTxt: altText
+        altTxt: altText,
+        name: productName
     }
     // Envoie au localStorage des éléments des canapés
     localStorage.setItem(productId, JSON.stringify(manipPanier))
-    document.location.reload()
 }
 
 // Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quanto+ité = 0
