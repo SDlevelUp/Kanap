@@ -1,11 +1,12 @@
+//Création d'une variable globale
 const cart = []
+//Récupération des Items
+catchItems()
 
-catchItemsOfCache()
-console.log(cart)
 
-cart.forEach((item) => displayItem(item))
-
-function catchItemsOfCache(){
+//Boucle pour récupéter les items et les afficher sous forme de tableau dans la console
+cart.forEach((item) => visualizeItem(item))
+function catchItems(){
     const numberOfItems = localStorage.length
     for(let i = 0; i < numberOfItems; i++){
     const item = localStorage.getItem(localStorage.key(i)) || ""
@@ -14,7 +15,7 @@ function catchItemsOfCache(){
     }
 }
 // Création de la fonction qui contient l'article
-function displayItem(item) {
+function visualizeItem(item) {
     const article = createArticle(item)
     //Insertion de la div de l'image
     const divOfImage = createImageDiv(item)
@@ -22,7 +23,9 @@ function displayItem(item) {
     // Insertion du content de la description du produit
     const cardItemContent = createContentDescription(item)
     article.appendChild(cardItemContent)
-    displayArticle(article)
+    
+    visualizeArticle(article)
+    visualiseTotalPrice(item)
 }
 
 // Fonction dréation du content
@@ -36,6 +39,7 @@ function createContentDescription(item) {
     
     cardItemContent.appendChild(description)
     cardItemContent.appendChild(settings)
+    
     return cardItemContent
 }
 
@@ -47,15 +51,18 @@ function createSettingsOfProducts(item){
 
     addQuantitySettings(settings, item)
     addDeleteSettings(settings)
+
     return settings
 }
 
 function addDeleteSettings(settings){
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
+
     const p = document.createElement("p")
     p.textContent = "Suprimer"
     div.appendChild(p)
+
     settings.appendChild(div)
 }
 
@@ -67,7 +74,7 @@ function addQuantitySettings(settings, item){
     const p = document.createElement("p")
     p.textContent = " Qté : "
     quantity.appendChild(p)
-    // Insertion de l'élément "input" et ses éléments 
+    // Insertion de l'élément "input" et ses éléments (type, name, min, max, ...)
     const input = document.createElement("input")
     input.type = "number"
     input.classList.add("itemQuantity")
@@ -75,7 +82,8 @@ function addQuantitySettings(settings, item){
     input.min = "1"
     input.max = "100"
     input.value = item.quantity
-    settings.appendChild(input)
+    quantity.appendChild(input)
+    settings.appendChild(quantity)
 }
 
 // Fonction description du canapé
@@ -99,7 +107,7 @@ function createDesctiption(item) {
     return description
 }
 
-function displayArticle(article) {
+function visualizeArticle(article) {
     document.querySelector("#cart__items").appendChild(article)
 }
 
@@ -111,7 +119,6 @@ function createArticle(item) {
     return article
 }
 
-
 function createImageDiv(item) {
     const div = document.createElement("div")
     div.classList.add("cart__item__img")
@@ -120,6 +127,18 @@ function createImageDiv(item) {
     image.alt = item.altTxt
     div.appendChild(image)
     return div
+}
+
+ 
+function visualiseTotalPrice(item){
+    let total = 0
+    const totalPrice = document.querySelector("#totalPrice")
+    cart.forEach((item) => {
+        const totalUnitPrice = item.price * item.quantity
+        total = total + totalUnitPrice
+    })
+    console.log(total)
+    totalPrice.textContent = total
 }
 
 
