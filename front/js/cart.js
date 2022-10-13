@@ -3,7 +3,6 @@ const cart = []
 //Récupération des Items
 catchItems()
 
-
 //Boucle pour récupéter les items et les afficher sous forme de tableau dans la console
 cart.forEach((item) => visualizeItem(item))
 function catchItems(){
@@ -25,7 +24,8 @@ function visualizeItem(item) {
     article.appendChild(cardItemContent)
     
     visualizeArticle(article)
-    visualiseTotalPrice(item)
+    visualizeTotalPrice()
+    visualizeTotalQuantity()
 }
 
 // Fonction dréation du content
@@ -76,12 +76,18 @@ function addQuantitySettings(settings, item){
     quantity.appendChild(p)
     // Insertion de l'élément "input" et ses éléments (type, name, min, max, ...)
     const input = document.createElement("input")
+    
+    //Ajout des spécifités relatives à l'input(type, name, value, ...)
     input.type = "number"
     input.classList.add("itemQuantity")
     input.name = "itemQuantity"
     input.min = "1"
     input.max = "100"
     input.value = item.quantity
+    
+    //Eventlistener pour varier le prix et la quantité dans le panier
+    input.addEventListener("input", (e) => changeQuantityAndPrice(item.id, input.value))
+
     quantity.appendChild(input)
     settings.appendChild(quantity)
 }
@@ -128,9 +134,8 @@ function createImageDiv(item) {
     div.appendChild(image)
     return div
 }
-
  
-function visualiseTotalPrice(item){
+function visualizeTotalPrice(){
     let total = 0
     const totalPrice = document.querySelector("#totalPrice")
     cart.forEach((item) => {
@@ -141,4 +146,21 @@ function visualiseTotalPrice(item){
     totalPrice.textContent = total
 }
 
+function visualizeTotalQuantity(){
+    let total = 0
+    const totalQuantity = document.querySelector("#totalQuantity")
+    cart.forEach((item) => {
+        const totalUnitQuantity = item.quantity
+        total = total + totalUnitQuantity
+    })
+    console.log(totalQuantity)
+    totalQuantity.textContent = total
+}
 
+//Fonction de réduction de la quantité et du prix
+function changeQuantityAndPrice(id, newValue){
+    const itemUpdate = cart.find((item) => item.id === id)
+    itemUpdate.quantity = Number(newValue)
+    visualizeTotalPrice()
+    visualizeTotalQuantity()
+}
