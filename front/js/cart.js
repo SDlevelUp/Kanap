@@ -39,7 +39,6 @@ function createContentDescription(item) {
     
     cardItemContent.appendChild(description)
     cardItemContent.appendChild(settings)
-    
     return cardItemContent
 }
 
@@ -50,20 +49,31 @@ function createSettingsOfProducts(item){
     settings.classList.add("cart__item__content__settings")
 
     addQuantitySettings(settings, item)
-    addDeleteSettings(settings)
-
+    addDeleteSettings(settings, item)
     return settings
 }
 
-function addDeleteSettings(settings){
+function addDeleteSettings(settings, item){
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
+    div.addEventListener("click", () => deleteItem(item))
 
+    //Création de la constante pour afficher le mot "Supprimer"
     const p = document.createElement("p")
     p.textContent = "Suprimer"
     div.appendChild(p)
-
     settings.appendChild(div)
+}
+
+function deleteItem(item){
+    const itemToDelete = cart.findIndex(
+        (product) => product.id === item.id && product.color === item.color
+    )
+    cart.splice(itemToDelete, 1)
+    visualizeTotalQuantity()
+    visualizeTotalPrice()
+    deleteDateFromCache(item)
+    deleteArticleFromCart(item)
 }
 
 // Fonction sur la partie quantité
@@ -86,7 +96,7 @@ function addQuantitySettings(settings, item){
     input.value = item.quantity
     
     //Eventlistener pour varier le prix et la quantité dans le panier
-    input.addEventListener("input", (e) => changeQuantityAndPrice(item.id, input.value))
+    input.addEventListener("input", () => changeQuantityAndPrice(item.id, input.value, item))
 
     quantity.appendChild(input)
     settings.appendChild(quantity)
@@ -142,7 +152,6 @@ function visualizeTotalPrice(){
         const totalUnitPrice = item.price * item.quantity
         total = total + totalUnitPrice
     })
-    console.log(total)
     totalPrice.textContent = total
 }
 
@@ -153,14 +162,35 @@ function visualizeTotalQuantity(){
         const totalUnitQuantity = item.quantity
         total = total + totalUnitQuantity
     })
-    console.log(totalQuantity)
+
     totalQuantity.textContent = total
 }
 
 //Fonction de réduction de la quantité et du prix
-function changeQuantityAndPrice(id, newValue){
+function changeQuantityAndPrice(id, newValue, item){
     const itemUpdate = cart.find((item) => item.id === id)
     itemUpdate.quantity = Number(newValue)
+    item.quantity = itemUpdate.quantity
     visualizeTotalPrice()
     visualizeTotalQuantity()
+    saveNewData(item)
+}
+
+function deleteDateFromCache(item){
+const key = `${item.id}-${item.color}`
+localStorage.removeItem(key)
+}
+
+//Fonction d'enregistrement des nouvelles valeurs updater
+function saveNewData(item){
+    const saveData = JSON.stringify(item)
+    //On change la clé de base avec la vraie valeur du produit dans le panier (Callycé noir + Callycé blanc, ...)
+    const key = `${item.id} -${item.color}`
+    localStorage.setItem(key, saveData)
+}
+function deleteArticleFromCart(item){
+    const deleteArticleFromCart= document.querySelector(
+        `article[data-id="${item.id}"][data-color="${item.color}"]`
+    )
+    deleteArticleFromCart.remove()
 }

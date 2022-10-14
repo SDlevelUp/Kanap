@@ -94,7 +94,7 @@ function addColors(colors) {
 
 // Constante qui va lire les des données 
 const button = document.querySelector("#addToCart")
-    button.addEventListener("click", (event) => {
+    button.addEventListener("click", (e) => {
         const color = document.querySelector("#colors").value
         const quantity = document.querySelector("#quantity").value
 
@@ -106,8 +106,9 @@ const button = document.querySelector("#addToCart")
 
 // Fonction pour sauvegarder la dommande dans le fichier panier
 function sauvegardeCommande(color, quantity){ 
+    const key = `${productId} -${color}`
     const manipPanier = {
-        id: productId,
+        id:productId,
         color: color,
         quantity: Number(quantity),
         price: itemPrice,
@@ -116,7 +117,7 @@ function sauvegardeCommande(color, quantity){
         name: productName
     }
     // Envoie au localStorage des éléments des canapés
-    localStorage.setItem(productId, JSON.stringify(manipPanier))
+    localStorage.setItem(key, JSON.stringify(manipPanier))
 }
 
 // Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quanto+ité = 0
