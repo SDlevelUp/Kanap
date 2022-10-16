@@ -1,16 +1,20 @@
-//Création d'une variable globale
+//Création d'une constiable globale
 const cart = []
 //Récupération des Items
 catchItems()
 
+
 //Boucle pour récupéter les items et les afficher sous forme de tableau dans la console
 cart.forEach((item) => visualizeItem(item))
+
+
+
 function catchItems(){
     const numberOfItems = localStorage.length
     for(let i = 0; i < numberOfItems; i++){
-    const item = localStorage.getItem(localStorage.key(i)) || ""
-    const itemObject = JSON.parse(item)
-    cart.push(itemObject)
+        const item = localStorage.getItem(localStorage.key(i)) || ""
+        const itemObject = JSON.parse(item)
+        cart.push(itemObject)
     }
 }
 // Création de la fonction qui contient l'article
@@ -47,7 +51,7 @@ function createSettingsOfProducts(item){
     //Insertion div 
     const settings = document.createElement("div")
     settings.classList.add("cart__item__content__settings")
-
+    
     addQuantitySettings(settings, item)
     addDeleteSettings(settings, item)
     return settings
@@ -57,7 +61,7 @@ function addDeleteSettings(settings, item){
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
     div.addEventListener("click", () => deleteItem(item))
-
+    
     //Création de la constante pour afficher le mot "Supprimer"
     const p = document.createElement("p")
     p.textContent = "Suprimer"
@@ -68,26 +72,26 @@ function addDeleteSettings(settings, item){
 function deleteItem(item){
     const itemToDelete = cart.findIndex(
         (product) => product.id === item.id && product.color === item.color
-    )
-    cart.splice(itemToDelete, 1)
-    visualizeTotalQuantity()
-    visualizeTotalPrice()
-    deleteDateFromCache(item)
-    deleteArticleFromCart(item)
-}
-
-// Fonction sur la partie quantité
-function addQuantitySettings(settings, item){
-    const quantity = document.createElement("div")
-    quantity.classList.add("cart__item__content__settings__quantity")
-    //Ajout du p de la quantité
-    const p = document.createElement("p")
-    p.textContent = " Qté : "
-    quantity.appendChild(p)
-    // Insertion de l'élément "input" et ses éléments (type, name, min, max, ...)
-    const input = document.createElement("input")
+        )
+        cart.splice(itemToDelete, 1)
+        visualizeTotalQuantity()
+        visualizeTotalPrice()
+        deleteDateFromCache(item)
+        deleteArticleFromCart(item)
+    }
     
-    //Ajout des spécifités relatives à l'input(type, name, value, ...)
+    // Fonction sur la partie quantité
+    function addQuantitySettings(settings, item){
+        const quantity = document.createElement("div")
+        quantity.classList.add("cart__item__content__settings__quantity")
+        //Ajout du p de la quantité
+        const p = document.createElement("p")
+        p.textContent = " Qté : "
+        quantity.appendChild(p)
+        // Insertion de l'élément "input" et ses éléments (type, name, min, max, ...)
+        const input = document.createElement("input")
+        
+        //Ajout des spécifités relatives à l'input(type, name, value, ...)
     input.type = "number"
     input.classList.add("itemQuantity")
     input.name = "itemQuantity"
@@ -95,14 +99,14 @@ function addQuantitySettings(settings, item){
     input.max = "100"
     input.value = item.quantity
     
-    //Eventlistener pour varier le prix et la quantité dans le panier
+    //Eventlistener pour constier le prix et la quantité dans le panier
     input.addEventListener("input", () => changeQuantityAndPrice(item.id, input.value, item))
-
+    
     quantity.appendChild(input)
     settings.appendChild(quantity)
 }
 
-// Fonction description du canapé
+// Ajout des spécifités des canapés
 function createDesctiption(item) {
     //On lui créer sa div
     const description = document.createElement("div")
@@ -144,7 +148,7 @@ function createImageDiv(item) {
     div.appendChild(image)
     return div
 }
- 
+
 function visualizeTotalPrice(){
     let total = 0
     const totalPrice = document.querySelector("#totalPrice")
@@ -162,7 +166,7 @@ function visualizeTotalQuantity(){
         const totalUnitQuantity = item.quantity
         total = total + totalUnitQuantity
     })
-
+    
     totalQuantity.textContent = total
 }
 
@@ -177,13 +181,13 @@ function changeQuantityAndPrice(id, newValue, item){
 }
 
 function deleteDateFromCache(item){
-const key = `${item.id}-${item.color}`
-localStorage.removeItem(key)
+    const key = `${item.id}-${item.color}`
+    localStorage.removeItem(key)
 }
 
-//Fonction d'enregistrement des nouvelles valeurs updater
+//Fonction d'enregiement des nouvelles valeurs updater
 function saveNewData(item){
-    const saveData = JSON.stringify(item)
+    const saveData = JSON.ingify(item)
     //On change la clé de base avec la vraie valeur du produit dans le panier (Callycé noir + Callycé blanc, ...)
     const key = `${item.id} -${item.color}`
     localStorage.setItem(key, saveData)
@@ -191,6 +195,94 @@ function saveNewData(item){
 function deleteArticleFromCart(item){
     const deleteArticleFromCart= document.querySelector(
         `article[data-id="${item.id}"][data-color="${item.color}"]`
-    )
-    deleteArticleFromCart.remove()
+        )
+        deleteArticleFromCart.remove()
 }
+    
+// Formulaire et commande panier
+const orderButton = document.querySelector("#order")
+orderButton.addEventListener("click", (e) => submitForm(e))
+
+// On récupère les éléments du formulaire
+function submitForm(e) {
+    e.preventDefault()
+    const form = document.querySelector(".cart__order__form")
+    console.log(form.elements)
+}
+
+
+
+
+
+
+
+// //Formulaire de contact
+
+// const firstName = document.getElementById("firstName")
+// const lastName = document.getElementById("lastName")
+// const adress = document.getElementById("adress")
+// const city = document.getElementById("city")
+// const email = document.getElementById("email")
+
+// let valueFirstName, valueLastName, valueAdress, valueCity, valueEmail
+
+// firstName.addEventListener("click", function(e){
+
+//     valueFirstName;
+//     if (e.target.value.length == 0){
+//         errorFirstName.innerHTML = ""
+//         valueFirstName = null
+
+//     }else if (e.target.value.length < 3 || e.target.value.length > 25){
+//         errorFirstName.innerHTML = "Le prénom doit contenir entre 3 et 25 caractères"
+//         valueFirstName = null
+//     }
+//     if (e.target.value.match(/^[a-z A-Z]{3, 25}$/)){
+//         errorFirstName.innerHTML = "qsdqs"
+//         valueFirstName = e.target.value
+//         console.log(valueFirstName)
+//     } 
+//     if(
+//         !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
+//         e.target.value.length > 3 && 
+//         e.target.value.length < 25
+//     ) {
+//         error.FirstName.innerHTML = 
+//             "Le prénom ne doit pas contenir de caractère spécial, chiffre ou accent"
+//         valueFirstName = null
+//         console.log("chelou")
+//     }
+// })
+
+
+
+// lastName.addEventListener("input", function(e){
+
+//     valueLastName;
+//     if (e.target.value.length == 0){
+//         errorNom.innerHTML = ""
+//         valueLastName = null
+
+//     }else if (e.target.value.length < 3 || e.target.value.length > 25){
+//         errorLastName.innerHTML = "le nom doit contenir entre 3 et 25 caractères"
+//         valueLastName = null
+//     }
+//     if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
+//         errorLastName.innerHTML = ""
+//         valueLastName = e.target.value
+//         console.log(valueLastName)
+//     } 
+//     if(
+//         !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
+//         e.target.value.length > 3 && 
+//         e.target.value.length < 25
+//     ) {
+//         error.LastName.innerHTML = 
+//         "Le nom ne doit pas contenir de caractère spécial, chiffre ou accent"
+//         valueLastName = null
+//     }
+// })
+
+
+
+
