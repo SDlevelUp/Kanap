@@ -7,6 +7,8 @@ catchItems()
 //Boucle pour récupéter les items et les afficher sous forme de tableau dans la console
 cart.forEach((item) => visualizeItem(item))
 
+// const orderButton = document.querySelector(".cart__order__form")
+// orderButton.addEventListener("click", (e) => submitForm(e))
 
 
 function catchItems(){
@@ -187,7 +189,7 @@ function deleteDateFromCache(item){
 
 //Fonction d'enregiement des nouvelles valeurs updater
 function saveNewData(item){
-    const saveData = JSON.ingify(item)
+    const saveData = JSON.stringify(item)
     //On change la clé de base avec la vraie valeur du produit dans le panier (Callycé noir + Callycé blanc, ...)
     const key = `${item.id} -${item.color}`
     localStorage.setItem(key, saveData)
@@ -199,90 +201,114 @@ function deleteArticleFromCart(item){
         deleteArticleFromCart.remove()
 }
     
-// Formulaire et commande panier
-const orderButton = document.querySelector("#order")
-orderButton.addEventListener("click", (e) => submitForm(e))
 
-// On récupère les éléments du formulaire
-function submitForm(e) {
-    e.preventDefault()
-    const form = document.querySelector(".cart__order__form")
-    console.log(form.elements)
-}
+//On récupère les éléments du formulaire
+// function submitForm(e) {
+//     e.preventDefault()
+//     if (cart.length === 0) {    
+//     alert("Veuillez remplir les champs ou ajouter des produit dans votre panier")
+//     return
+// }
 
-
-
-
-
-
-
-// //Formulaire de contact
-
-// const firstName = document.getElementById("firstName")
-// const lastName = document.getElementById("lastName")
-// const adress = document.getElementById("adress")
-// const city = document.getElementById("city")
-// const email = document.getElementById("email")
-
-// let valueFirstName, valueLastName, valueAdress, valueCity, valueEmail
-
-// firstName.addEventListener("click", function(e){
-
-//     valueFirstName;
-//     if (e.target.value.length == 0){
-//         errorFirstName.innerHTML = ""
-//         valueFirstName = null
-
-//     }else if (e.target.value.length < 3 || e.target.value.length > 25){
-//         errorFirstName.innerHTML = "Le prénom doit contenir entre 3 et 25 caractères"
-//         valueFirstName = null
-//     }
-//     if (e.target.value.match(/^[a-z A-Z]{3, 25}$/)){
-//         errorFirstName.innerHTML = "qsdqs"
-//         valueFirstName = e.target.value
-//         console.log(valueFirstName)
-//     } 
-//     if(
-//         !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
-//         e.target.value.length > 3 && 
-//         e.target.value.length < 25
-//     ) {
-//         error.FirstName.innerHTML = 
-//             "Le prénom ne doit pas contenir de caractère spécial, chiffre ou accent"
-//         valueFirstName = null
-//         console.log("chelou")
-//     }
+//     const body = addRequestToBody()
+//     fetch("http://localhost:3000/api/products/order", {
+//         method: "POST",
+//         body: JSON.stringify(body),
+//         headers: {
+//             "Content-Type": "application/json"
+//         }
 // })
+//         .then((res) => res.json())
+//         .then((res) => console.log(res))    
+// }
 
 
 
-// lastName.addEventListener("input", function(e){
 
-//     valueLastName;
-//     if (e.target.value.length == 0){
-//         errorNom.innerHTML = ""
-//         valueLastName = null
-
-//     }else if (e.target.value.length < 3 || e.target.value.length > 25){
-//         errorLastName.innerHTML = "le nom doit contenir entre 3 et 25 caractères"
-//         valueLastName = null
+// function validationOfForm(){
+//     const form = document.querySelector(".cart__order__form")
+//     const inputs = form.querySelectorAll("input")
+//     inputs.forEach(input) => {
+//         if(input.value === "") {
+//             alert("Veuillez remplir les champs nécessaires")
+//             return
+//         }
 //     }
-//     if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
-//         errorLastName.innerHTML = ""
-//         valueLastName = e.target.value
-//         console.log(valueLastName)
-//     } 
-//     if(
-//         !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
-//         e.target.value.length > 3 && 
-//         e.target.value.length < 25
-//     ) {
-//         error.LastName.innerHTML = 
-//         "Le nom ne doit pas contenir de caractère spécial, chiffre ou accent"
-//         valueLastName = null
+
+
+
+// function addRequestToBody() {
+//     const form = document.querySelector(".cart__order__form")
+
+//     const firstName = form.elements.firstName.value
+//     const lastName = form.elements.lastName.value
+//     const adress = form.elements.adress.value
+//     const city = form.elements.city.value
+//     const email = form.elements.email.value
+//     const body = { 
+//         contact : {
+//             firstName: firstName,
+//             lastName: lastName,
+//             adress: adress,
+//             city: city,
+//             email: email
+//         },
+//         products : getProductsIdFromCache()
+//         }
+//         console.log(body)
+//         return body
+// }
+    
+// function getProductsIdFromCache(){
+//     const numberOfProducts = localStorage.length
+//     const ids = []
+//     for (let i = 0; i < numberOfProducts; i++) {
+//         const key = localStorage.key(i)
+//         console.log(key)
+//         const id = key.split("-")[0]
+//         ids.push(id)
 //     }
-// })
+//     return ids
+// }
 
 
 
 
+const firstName = document.getElementById('firstName')
+const lastName = document.getElementById('lastName')
+const adress = document.getElementById('adress')
+const city = document.getElementById('city')
+const email = document.getElementById('email')
+
+let valueFirstName, valueLastName, valueAdress, valueCity, valueEmail
+
+firstName.addEventListener("input", function(e){
+
+    valueFirstName;
+    if (e.target.value.length == 0){
+        console.log("rien")
+        errorFirstName.innerHTML = " "
+        valueFirstName = null
+        console.log(valueFirstName)
+
+    }else if (e.target.value.length < 3 || e.target.value.length > 25){
+        errorFirstName.innerHTML = "Le prénom doit contenir entre 3 et 25 caractères"
+        valueFirstName = null
+        console.log("trop court ou trop long")
+    }
+    if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
+        errorFirstName.innerHTML = " "
+        valueFirstName = e.target.value
+        console.log("succes")
+        console.log(valueFirstName)
+    } 
+    if(
+        !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
+        e.target.value.length > 3 && 
+        e.target.value.length < 25
+    ) {
+        error.FirstName.innerHTML = " Le prénom de doit pas contenir de caractère spéciaux, chiffres ou accent "
+        valueFirstName = null;
+        console.log("ca ne fonctionne pas")
+    }
+})
