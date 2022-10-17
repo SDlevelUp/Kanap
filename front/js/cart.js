@@ -202,113 +202,104 @@ function deleteArticleFromCart(item){
 }
     
 
-//On récupère les éléments du formulaire
-// function submitForm(e) {
-//     e.preventDefault()
-//     if (cart.length === 0) {    
-//     alert("Veuillez remplir les champs ou ajouter des produit dans votre panier")
-//     return
-// }
+// On récupère les éléments du formulaire
+function submitForm(e) {
+    e.preventDefault()
+    if (cart.length === 0) {    
+    alert("Veuillez remplir les champs ou ajouter des produit dans votre panier")
+    return
+}
 
-//     const body = addRequestToBody()
-//     fetch("http://localhost:3000/api/products/order", {
-//         method: "POST",
-//         body: JSON.stringify(body),
-//         headers: {
-//             "Content-Type": "application/json"
-//         }
-// })
-//         .then((res) => res.json())
-//         .then((res) => console.log(res))    
-// }
-
-
-
-
-// function validationOfForm(){
-//     const form = document.querySelector(".cart__order__form")
-//     const inputs = form.querySelectorAll("input")
-//     inputs.forEach(input) => {
-//         if(input.value === "") {
-//             alert("Veuillez remplir les champs nécessaires")
-//             return
-//         }
-//     }
-
-
-
-// function addRequestToBody() {
-//     const form = document.querySelector(".cart__order__form")
-
-//     const firstName = form.elements.firstName.value
-//     const lastName = form.elements.lastName.value
-//     const adress = form.elements.adress.value
-//     const city = form.elements.city.value
-//     const email = form.elements.email.value
-//     const body = { 
-//         contact : {
-//             firstName: firstName,
-//             lastName: lastName,
-//             adress: adress,
-//             city: city,
-//             email: email
-//         },
-//         products : getProductsIdFromCache()
-//         }
-//         console.log(body)
-//         return body
-// }
-    
-// function getProductsIdFromCache(){
-//     const numberOfProducts = localStorage.length
-//     const ids = []
-//     for (let i = 0; i < numberOfProducts; i++) {
-//         const key = localStorage.key(i)
-//         console.log(key)
-//         const id = key.split("-")[0]
-//         ids.push(id)
-//     }
-//     return ids
-// }
-
-
-
-
-const firstName = document.getElementById('firstName')
-const lastName = document.getElementById('lastName')
-const adress = document.getElementById('adress')
-const city = document.getElementById('city')
-const email = document.getElementById('email')
-
-let valueFirstName, valueLastName, valueAdress, valueCity, valueEmail
-
-firstName.addEventListener("input", function(e){
-
-    valueFirstName;
-    if (e.target.value.length == 0){
-        console.log("rien")
-        errorFirstName.innerHTML = " "
-        valueFirstName = null
-        console.log(valueFirstName)
-
-    }else if (e.target.value.length < 3 || e.target.value.length > 25){
-        errorFirstName.innerHTML = "Le prénom doit contenir entre 3 et 25 caractères"
-        valueFirstName = null
-        console.log("trop court ou trop long")
-    }
-    if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
-        errorFirstName.innerHTML = " "
-        valueFirstName = e.target.value
-        console.log("succes")
-        console.log(valueFirstName)
-    } 
-    if(
-        !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
-        e.target.value.length > 3 && 
-        e.target.value.length < 25
-    ) {
-        error.FirstName.innerHTML = " Le prénom de doit pas contenir de caractère spéciaux, chiffres ou accent "
-        valueFirstName = null;
-        console.log("ca ne fonctionne pas")
-    }
+    const body = addRequestToBody()
+    fetch("http://localhost:3000/api/products/order", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+            "Content-Type": "application/json"
+        }
 })
+        .then((res) => res.json())
+        .then((res) => console.log(res))    
+}
+
+
+
+
+
+
+
+function addRequestToBody() {
+    const form = document.querySelector(".cart__order__form")
+
+    const firstName = form.elements.firstName.value
+    const lastName = form.elements.lastName.value
+    const adress = form.elements.adress.value
+    const city = form.elements.city.value
+    const email = form.elements.email.value
+    const body = { 
+        contact : {
+            firstName: firstName,
+            lastName: lastName,
+            adress: adress,
+            city: city,
+            email: email
+        },
+        products : getProductsIdFromCache()
+        }
+        console.log(body)
+        return body
+}
+    
+function getProductsIdFromCache(){
+    const numberOfProducts = localStorage.length
+    const ids = []
+    for (let i = 0; i < numberOfProducts; i++) {
+        const key = localStorage.key(i)
+        console.log(key)
+        const id = key.split("-")[0]
+        ids.push(id)
+    }
+    return ids
+}
+
+
+
+
+// const firstName = document.getElementById('firstName')
+// const lastName = document.getElementById('lastName')
+// const adress = document.getElementById('adress')
+// const city = document.getElementById('city')
+// const email = document.getElementById('email')
+
+// let valueFirstName, valueLastName, valueAdress, valueCity, valueEmail
+
+// firstName.addEventListener("change", function(e){
+
+//     valueFirstName;
+//     if (e.target.value.length == 0){
+//         console.log("rien")
+//         errorFirstName.innerHTML = " "
+//         valueFirstName = null
+//         console.log(valueFirstName)
+
+//     }else if (e.target.value.length < 3 || e.target.value.length > 25){
+//         errorFirstName.innerHTML = " Le prénom doit contenir entre 3 et 25 caractères "
+//         valueFirstName = null
+//         console.log("trop court ou trop long")
+//     }
+//     if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
+//         errorFirstName.innerHTML = " "
+//         valueFirstName = e.target.value
+//         console.log("succes")
+//         console.log(valueFirstName)
+//     } 
+//     if(
+//         !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
+//         e.target.value.length > 3 && 
+//         e.target.value.length < 25
+//     ) {
+//         error.FirstName.innerHTML = " Le prénom de doit pas contenir de caractère spéciaux, chiffres ou accent "
+//         valueFirstName = null;
+//         console.log("ca ne fonctionne pas")
+//     }
+// })
