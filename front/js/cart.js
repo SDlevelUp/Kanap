@@ -7,10 +7,6 @@ catchItems()
 //Boucle pour récupéter les items et les afficher sous forme de tableau dans la console
 cart.forEach((item) => visualizeItem(item))
 
-// const orderButton = document.querySelector(".cart__order__form")
-// orderButton.addEventListener("click", (e) => submitForm(e))
-
-
 function catchItems(){
     const numberOfItems = localStorage.length
     for(let i = 0; i < numberOfItems; i++){
@@ -202,58 +198,199 @@ function deleteArticleFromCart(item){
 }
     
 
-// On récupère les éléments du formulaire
+//Récupération des éléments des inputs selon leur ID
+const firstName = document.querySelector('#firstName')
+const lastName = document.querySelector('#lastName')
+const address = document.querySelector('#address')
+const city = document.querySelector('#city')
+const email = document.querySelector('#email')
+
+//Récupération des éléments pour les messages d'erreurs
+let errorFirstName = document.querySelector('#firstNameErrorMsg');
+let errorLastName = document.querySelector('#lastNameErrorMsg');
+let errorAddress = document.querySelector('#addressErrorMsg');
+let errorCity = document.querySelector('#cityErrorMsg')
+let errorEmail = document.querySelector('#emailErrorMsg');
+
+let valueFirstName, valueLastName, valueAddress, valueCity, valueEmail
+
+// Formulaire : valeur, caractères max, etc
+firstName.addEventListener("input", function(e){
+    valueFirstName;
+    if (e.target.value.length == 0){
+        errorFirstName.innerText = " "
+        valueFirstName = null
+    }
+    else if (e.target.value.length < 3 || e.target.value.length > 25){
+        errorFirstName.innerText = " Le prénom doit contenir entre 3 et 25 caractères "
+        valueFirstName = null
+    }
+    if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
+        errorFirstName.innerText = " "
+        valueFirstName = e.target.value
+    } 
+    if(
+        !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
+        e.target.value.length > 3 && 
+        e.target.value.length < 25
+    ) {
+        errorFirstName.innerText = " Le prénom de doit pas contenir de caractère spéciaux, chiffres ou accent "
+        valueFirstName = null
+    }
+})
+
+lastName.addEventListener("input", function(e){
+    valueLastName;
+    if (e.target.value.length == 0){
+        errorLastName.innerText = " "
+        valueLastName = null
+
+    }
+    else if (e.target.value.length < 3 || e.target.value.length > 25){
+        errorLastName.innerText = " Le nom doit contenir entre 3 et 25 caractères "
+        valueLastName = null
+        console.log("trop court ou long")
+    }
+
+    if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
+        errorLastName.innerText = " "
+        valueLastName = e.target.value
+    } 
+    if(
+        !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
+        e.target.value.length > 3 && 
+        e.target.value.length < 25
+    ) {
+        errorLastName.innerText = " Le nom de doit pas contenir de caractère spéciaux, chiffres ou accent "
+        valueLastName = null
+    }
+})
+
+address.addEventListener("input", function(e){
+    valueAddress;
+    if (e.target.value.length == 0){
+        errorAddress.innerText = " "
+        valueAddress = null
+    }
+    
+    else if (e.target.value.length < 3 || e.target.value.length > 35){
+        errorAddress.innerText = " L'adresse doit contenir entre 3 et 35 caractères "
+        valueAddress = null
+    }
+
+    if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)){
+        errorAddress.innerText = " "
+        valueAddress = e.target.value
+    } 
+    if(
+        !e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,25}$/) && 
+        e.target.value.length > 3 && 
+        e.target.value.length < 35
+    ) {
+        errorAddress.innerText = " L'adresse doit commencer par des chiffres "
+        valueAddress = null
+    }
+})
+
+city.addEventListener("input", function(e){
+    valueCity;
+    if (e.target.value.length == 0){
+        errorCity.innerText = " "
+        valueCity = null
+    }
+    else if (e.target.value.length < 3 || e.target.value.length > 25){
+        errorCity.innerText = " La ville doit contenir entre 3 et 25 caractères "
+        valueCity = null
+    }
+    if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
+        errorCity.innerText = " "
+        valueCity = e.target.value
+    } 
+    if(
+        !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
+        e.target.value.length > 3 && 
+        e.target.value.length < 25
+    ) {
+        errorCity.innerText = " La ville de doit pas contenir de caractère spéciaux, chiffres ou accent "
+        valueCity = null
+    }
+})
+
+email.addEventListener("input", (e) => {
+    if(e.target.value.length == 0) {
+        errorEmail.innerText = " "
+        valueEmail = null
+    }
+    else if (e.target.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)){
+        errorEmail.innerText = " "
+        valueEmail = e.target.value
+    }
+    if(!e.target.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) && !e.target.value.length == 0){
+        errorEmail.innerText = " L'email est incorrecte, saisissez un mail de type: pierredupont@hotmail.fr"
+        valueEmail = null
+    }
+})
+
+const orderButton = document.querySelector('#order')
+orderButton.addEventListener("click", (e) => submitForm(e))
+
+
 function submitForm(e) {
     e.preventDefault()
-    if (cart.length === 0) {    
-    alert("Veuillez remplir les champs ou ajouter des produit dans votre panier")
-    return
-}
+    if(cart.length === 0) {
+        alert("Ajoutez de jolis canapés à votre panier")
+        return
+    }
+    if (ifFormIsInvalid()) return
 
-    const body = addRequestToBody()
-    fetch("http://localhost:3000/api/products/order", {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
+const body = addRequestBody()
+
+fetch("http://localhost:3000/api/products/order", {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
             "Content-Type": "application/json"
         }
-})
+    })
         .then((res) => res.json())
-        .then((res) => console.log(res))    
+        .then((data) => console.log(data))
 }
 
-
-
-
-
-
-
-function addRequestToBody() {
-    const form = document.querySelector(".cart__order__form")
-
-    const firstName = form.elements.firstName.value
-    const lastName = form.elements.lastName.value
-    const adress = form.elements.adress.value
-    const city = form.elements.city.value
-    const email = form.elements.email.value
-    const body = { 
-        contact : {
-            firstName: firstName,
-            lastName: lastName,
-            adress: adress,
-            city: city,
-            email: email
-        },
-        products : getProductsIdFromCache()
+//Validation du formulaire et des champs
+function ifFormIsInvalid(){
+    const form = document.querySelector(".cart__order__form") 
+    const inputs = form.querySelectorAll("input")
+    inputs.forEach((input) => {
+        if(input.value === "") {
+            alert("Remplissez correctement le formulaire SVP")
+            return true
         }
-        console.log(body)
-        return body
+        return false
+    })
 }
-    
-function getProductsIdFromCache(){
-    const numberOfProducts = localStorage.length
+
+function addRequestBody() {
+    const form = document.querySelector(".cart__order__form")
+    const body = {
+        contact:{
+            firstName: valueFirstName,
+            lastName: valueLastName,
+            address: valueAddress,
+            city: valueCity,
+            email: valueEmail
+        },
+        products: retrieveIdsFromCache()
+    }
+    console.log(body)
+    return body
+}
+
+function retrieveIdsFromCache(){
+    const numberOfProducts= localStorage.length
     const ids = []
-    for (let i = 0; i < numberOfProducts; i++) {
+
+    for(let i = 0; i < numberOfProducts; i++) {
+        //Récupération des clés produits
         const key = localStorage.key(i)
         console.log(key)
         const id = key.split("-")[0]
@@ -263,43 +400,3 @@ function getProductsIdFromCache(){
 }
 
 
-
-
-// const firstName = document.getElementById('firstName')
-// const lastName = document.getElementById('lastName')
-// const adress = document.getElementById('adress')
-// const city = document.getElementById('city')
-// const email = document.getElementById('email')
-
-// let valueFirstName, valueLastName, valueAdress, valueCity, valueEmail
-
-// firstName.addEventListener("change", function(e){
-
-//     valueFirstName;
-//     if (e.target.value.length == 0){
-//         console.log("rien")
-//         errorFirstName.innerHTML = " "
-//         valueFirstName = null
-//         console.log(valueFirstName)
-
-//     }else if (e.target.value.length < 3 || e.target.value.length > 25){
-//         errorFirstName.innerHTML = " Le prénom doit contenir entre 3 et 25 caractères "
-//         valueFirstName = null
-//         console.log("trop court ou trop long")
-//     }
-//     if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
-//         errorFirstName.innerHTML = " "
-//         valueFirstName = e.target.value
-//         console.log("succes")
-//         console.log(valueFirstName)
-//     } 
-//     if(
-//         !e.target.value.match(/^[a-z A-Z]{3,25}$/) && 
-//         e.target.value.length > 3 && 
-//         e.target.value.length < 25
-//     ) {
-//         error.FirstName.innerHTML = " Le prénom de doit pas contenir de caractère spéciaux, chiffres ou accent "
-//         valueFirstName = null;
-//         console.log("ca ne fonctionne pas")
-//     }
-// })
