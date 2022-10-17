@@ -1,7 +1,6 @@
 //Redirection de l'URL des canapés vers la page d'ajout au panier
-let productId = new URL(window.location.href).searchParams.get('id')
-    console.log(productId)
-
+let productId = new URL(window.location.href).searchParams.get("id")
+  
     if(productId != null){
         let itemPrice = 0
         let imgUrl, altText, productName

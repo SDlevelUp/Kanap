@@ -338,7 +338,7 @@ orderButton.addEventListener("click", (e) => submitForm(e))
 function submitForm(e) {
     e.preventDefault()
     if(cart.length === 0) {
-        alert("Ajoutez de jolis canapés à votre panier")
+        alert("Ajoutez de magnifiques canapés à votre panier !")
         return
     }
     if (ifFormIsInvalid()) return
@@ -349,11 +349,16 @@ fetch("http://localhost:3000/api/products/order", {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
+            "Accept": "application/json",
             "Content-Type": "application/json"
         }
     })
         .then((res) => res.json())
-        .then((data) => console.log(data))
+        .then((data) => {
+            const orderId = data.orderId
+            window.location.href = "/html/confirmation.html" + "?orderId=" + orderId
+        })
+        .catch((err) => console.error(err))
 }
 
 //Validation du formulaire et des champs
@@ -381,7 +386,6 @@ function addRequestBody() {
         },
         products: retrieveIdsFromCache()
     }
-    console.log(body)
     return body
 }
 
@@ -392,7 +396,6 @@ function retrieveIdsFromCache(){
     for(let i = 0; i < numberOfProducts; i++) {
         //Récupération des clés produits
         const key = localStorage.key(i)
-        console.log(key)
         const id = key.split("-")[0]
         ids.push(id)
     }
