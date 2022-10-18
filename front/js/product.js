@@ -45,7 +45,6 @@ function addImage(imageUrl, altTxt) {
 }
 
 // Création de la fonction pour ajouter le nom des canapés
-
 function addTitle(name) {
      // Constante pour afficher le titre du canapé
     const h1 = document.querySelector("#title")
@@ -105,7 +104,7 @@ const button = document.querySelector("#addToCart")
 
 // Fonction pour sauvegarder la dommande dans le fichier panier
 function sauvegardeCommande(color, quantity){ 
-    const key = `${productId} -${color}`
+    const key = `${productId}-${color}`
     const manipPanier = {
         id:productId,
         color: color,

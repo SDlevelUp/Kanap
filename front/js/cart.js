@@ -3,10 +3,10 @@ const cart = []
 //Récupération des Items
 catchItems()
 
-
 //Boucle pour récupéter les items et les afficher sous forme de tableau dans la console
 cart.forEach((item) => visualizeItem(item))
 
+//Récupération des élements et affichages dans le localStorage 
 function catchItems(){
     const numberOfItems = localStorage.length
     for(let i = 0; i < numberOfItems; i++){
@@ -15,6 +15,7 @@ function catchItems(){
         cart.push(itemObject)
     }
 }
+
 // Création de la fonction qui contient l'article
 function visualizeItem(item) {
     const article = createArticle(item)
@@ -30,7 +31,7 @@ function visualizeItem(item) {
     visualizeTotalQuantity()
 }
 
-// Fonction dréation du content
+// Récupération du content de la description
 function createContentDescription(item) { 
     // Insertion de la div du content
     const cardItemContent = document.createElement("div")
@@ -44,18 +45,44 @@ function createContentDescription(item) {
     return cardItemContent
 }
 
-// Fonction pour appeler les paramètres
+// Récupération de la quantité sur la partie quantité
+function addQuantitySettings(settings, item){
+    const quantity = document.createElement("div")
+    quantity.classList.add("cart__item__content__settings__quantity")
+    //Ajout du p de la quantité
+    const p = document.createElement("p")
+    p.textContent = " Qté : "
+    quantity.appendChild(p)
+    // Insertion de l'élément "input" et ses éléments (type, name, min, max, ...)
+    const input = document.createElement("input")
+        
+    //Ajout des spécifités relatives à l'input(type, name, value, ...)
+    input.type = "number"
+    input.classList.add("itemQuantity")
+    input.name = "itemQuantity"
+    input.min = "1"
+    input.max = "100"
+    input.value = item.quantity
+    
+    //Ecouter au click l'ajustement prix / quantité dans le panier
+    input.addEventListener("input", () => changeQuantityAndPrice(item.id, input.value, item))
+    quantity.appendChild(input)
+    settings.appendChild(quantity)
+}
+
+// Fonction pour appeler les paramètres de suppression
 function createSettingsOfProducts(item){
     //Insertion div 
     const settings = document.createElement("div")
     settings.classList.add("cart__item__content__settings")
     
     addQuantitySettings(settings, item)
-    addDeleteSettings(settings, item)
+    addDeleteSettings(settings)
     return settings
 }
 
-function addDeleteSettings(settings, item){
+//Suppression de l'article au click
+function addDeleteSettings(settings){
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
     div.addEventListener("click", () => deleteItem(item))
@@ -67,6 +94,7 @@ function addDeleteSettings(settings, item){
     settings.appendChild(div)
 }
 
+//Suppression de l'article selectionné du cache et de la page cart
 function deleteItem(item){
     const itemToDelete = cart.findIndex(
         (product) => product.id === item.id && product.color === item.color
@@ -76,35 +104,9 @@ function deleteItem(item){
         visualizeTotalPrice()
         deleteDateFromCache(item)
         deleteArticleFromCart(item)
-    }
-    
-    // Fonction sur la partie quantité
-    function addQuantitySettings(settings, item){
-        const quantity = document.createElement("div")
-        quantity.classList.add("cart__item__content__settings__quantity")
-        //Ajout du p de la quantité
-        const p = document.createElement("p")
-        p.textContent = " Qté : "
-        quantity.appendChild(p)
-        // Insertion de l'élément "input" et ses éléments (type, name, min, max, ...)
-        const input = document.createElement("input")
-        
-        //Ajout des spécifités relatives à l'input(type, name, value, ...)
-    input.type = "number"
-    input.classList.add("itemQuantity")
-    input.name = "itemQuantity"
-    input.min = "1"
-    input.max = "100"
-    input.value = item.quantity
-    
-    //Eventlistener pour constier le prix et la quantité dans le panier
-    input.addEventListener("input", () => changeQuantityAndPrice(item.id, input.value, item))
-    
-    quantity.appendChild(input)
-    settings.appendChild(quantity)
 }
 
-// Ajout des spécifités des canapés
+// Création des spécifités des canapés qui s'afficheront
 function createDesctiption(item) {
     //On lui créer sa div
     const description = document.createElement("div")
@@ -118,17 +120,14 @@ function createDesctiption(item) {
     // On lui insert le paragraphe du prix
     const paragOfPrice = document.createElement("p")
     paragOfPrice.textContent = item.price + " €"
-    // On append tout les éléments
+    // On appende tout les éléments
     description.appendChild(h2)
     description.appendChild(p)
     description.appendChild(paragOfPrice)
     return description
 }
 
-function visualizeArticle(article) {
-    document.querySelector("#cart__items").appendChild(article)
-}
-
+// On associe à chaque éléments du canapés un attribut
 function createArticle(item) {
     const article = document.createElement("article")
     article.classList.add("card__item")
@@ -137,6 +136,12 @@ function createArticle(item) {
     return article
 }
 
+// Affichage des articles
+function visualizeArticle(article) {
+    document.querySelector("#cart__items").appendChild(article)
+}
+
+//Récupération de l'image issue de la div
 function createImageDiv(item) {
     const div = document.createElement("div")
     div.classList.add("cart__item__img")
@@ -147,7 +152,10 @@ function createImageDiv(item) {
     return div
 }
 
+
+//Recalcule de la quantité au click dans le panier
 function visualizeTotalPrice(){
+    //On récupère la nouvelle valeur
     let total = 0
     const totalPrice = document.querySelector("#totalPrice")
     cart.forEach((item) => {
@@ -157,7 +165,9 @@ function visualizeTotalPrice(){
     totalPrice.textContent = total
 }
 
+//Recalcule de la quantité au click dans le panier
 function visualizeTotalQuantity(){
+    //On récupère la nouvelle valeur
     let total = 0
     const totalQuantity = document.querySelector("#totalQuantity")
     cart.forEach((item) => {
@@ -168,11 +178,12 @@ function visualizeTotalQuantity(){
     totalQuantity.textContent = total
 }
 
-//Fonction de réduction de la quantité et du prix
+//Quand au click on augmente ou diminue la quantité, on récupère la nouvelle valeur
 function changeQuantityAndPrice(id, newValue, item){
     const itemUpdate = cart.find((item) => item.id === id)
     itemUpdate.quantity = Number(newValue)
     item.quantity = itemUpdate.quantity
+    //Appeler les fonctions qui vont recalculer le total : quantity and price
     visualizeTotalPrice()
     visualizeTotalQuantity()
     saveNewData(item)
@@ -187,7 +198,7 @@ function deleteDateFromCache(item){
 function saveNewData(item){
     const saveData = JSON.stringify(item)
     //On change la clé de base avec la vraie valeur du produit dans le panier (Callycé noir + Callycé blanc, ...)
-    const key = `${item.id} -${item.color}`
+    const key = `${item.id}-${item.color}`
     localStorage.setItem(key, saveData)
 }
 function deleteArticleFromCart(item){
@@ -368,6 +379,7 @@ function ifFormIsInvalid(){
     inputs.forEach((input) => {
         if(input.value === "") {
             alert("Remplissez correctement le formulaire SVP")
+            e.preventDefault()
             return true
         }
         return false
