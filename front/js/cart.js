@@ -1,34 +1,43 @@
-//Création d'une constiable globale
+//On souhaite récupérer un objet, on va du coup
+//....faire un array du total du cart
 const cart = []
-//Récupération des Items
-catchItems()
 
-//Boucle pour récupéter les items et les afficher sous forme de tableau dans la console
-cart.forEach((item) => visualizeItem(item))
+catchItemsFromCache()
 
-//Récupération des élements et affichages dans le localStorage 
-function catchItems(){
+//Récupération des items isue du cache
+function catchItemsFromCache(){
+    //Voir le nombre d'entrée dans le panier
     const numberOfItems = localStorage.length
+    //Loop pour itérer sur toutes les clés du localStorage et 
     for(let i = 0; i < numberOfItems; i++){
+        //...on en fait un objet avec JSON.parse
         const item = localStorage.getItem(localStorage.key(i)) || ""
         const itemObject = JSON.parse(item)
         cart.push(itemObject)
     }
 }
 
-// Création de la fonction qui contient l'article
-function visualizeItem(item) {
-    const article = createArticle(item)
-    //Insertion de la div de l'image
-    const divOfImage = createImageDiv(item)
-    article.appendChild(divOfImage)
-    // Insertion du content de la description du produit
-    const cardItemContent = createContentDescription(item)
-    article.appendChild(cardItemContent)
-    
-    visualizeArticle(article)
-    visualizeTotalPrice()
-    visualizeTotalQuantity()
+//Pour chaque éléments dans le cart on lui fabrique ses "attributs" issue du code HTML
+cart.forEach((item) => showItem(item))
+
+// On créer l'article
+function createArticle(item) {
+    const article = document.createElement("article")
+    article.classList.add("card__item")
+    article.dataset.id = item.id
+    article.dataset.color = item.color
+    return article
+}
+
+//Récupération de l'image issue de la div
+function createImageDiv(item) {
+    const div = document.createElement("div")
+    div.classList.add("cart__item__img")
+    const image = document.createElement("img")
+    image.src = item.imageUrl
+    image.alt = item.altTxt
+    div.appendChild(image)
+    return div
 }
 
 // Récupération du content de la description
@@ -43,6 +52,21 @@ function createContentDescription(item) {
     cardItemContent.appendChild(description)
     cardItemContent.appendChild(settings)
     return cardItemContent
+}
+
+//Afficher l'article complet 
+function showItem(item) {
+    const article = createArticle(item)
+    //Insertion de la div de l'image
+    const divOfImage = createImageDiv(item)
+    article.appendChild(divOfImage)
+    // Insertion du content de la description du produit
+    const cardItemContent = createContentDescription(item)
+    article.appendChild(cardItemContent)
+    
+    showArticle(article)
+    showTotalPrice()
+    showTotalQuantity()
 }
 
 // Récupération de la quantité sur la partie quantité
@@ -77,12 +101,12 @@ function createSettingsOfProducts(item){
     settings.classList.add("cart__item__content__settings")
     
     addQuantitySettings(settings, item)
-    addDeleteSettings(settings)
+    addDeleteSettings(settings, item)
     return settings
 }
 
 //Suppression de l'article au click
-function addDeleteSettings(settings){
+function addDeleteSettings(settings, item){
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
     div.addEventListener("click", () => deleteItem(item))
@@ -100,8 +124,8 @@ function deleteItem(item){
         (product) => product.id === item.id && product.color === item.color
         )
         cart.splice(itemToDelete, 1)
-        visualizeTotalQuantity()
-        visualizeTotalPrice()
+        showTotalQuantity()
+        showTotalPrice()
         deleteDateFromCache(item)
         deleteArticleFromCart(item)
 }
@@ -127,34 +151,15 @@ function createDesctiption(item) {
     return description
 }
 
-// On associe à chaque éléments du canapés un attribut
-function createArticle(item) {
-    const article = document.createElement("article")
-    article.classList.add("card__item")
-    article.dataset.id = item.id
-    article.dataset.color = item.color
-    return article
-}
+
 
 // Affichage des articles
-function visualizeArticle(article) {
+function showArticle(article) {
     document.querySelector("#cart__items").appendChild(article)
 }
 
-//Récupération de l'image issue de la div
-function createImageDiv(item) {
-    const div = document.createElement("div")
-    div.classList.add("cart__item__img")
-    const image = document.createElement("img")
-    image.src = item.imageUrl
-    image.alt = item.altTxt
-    div.appendChild(image)
-    return div
-}
-
-
 //Recalcule de la quantité au click dans le panier
-function visualizeTotalPrice(){
+function showTotalPrice(){
     //On récupère la nouvelle valeur
     let total = 0
     const totalPrice = document.querySelector("#totalPrice")
@@ -166,7 +171,7 @@ function visualizeTotalPrice(){
 }
 
 //Recalcule de la quantité au click dans le panier
-function visualizeTotalQuantity(){
+function showTotalQuantity(){
     //On récupère la nouvelle valeur
     let total = 0
     const totalQuantity = document.querySelector("#totalQuantity")
@@ -174,7 +179,7 @@ function visualizeTotalQuantity(){
         const totalUnitQuantity = item.quantity
         total = total + totalUnitQuantity
     })
-    
+    //Affichage du total
     totalQuantity.textContent = total
 }
 
@@ -184,11 +189,20 @@ function changeQuantityAndPrice(id, newValue, item){
     itemUpdate.quantity = Number(newValue)
     item.quantity = itemUpdate.quantity
     //Appeler les fonctions qui vont recalculer le total : quantity and price
-    visualizeTotalPrice()
-    visualizeTotalQuantity()
+    showTotalPrice()
+    showTotalQuantity()
     saveNewData(item)
 }
 
+//Fonction de suppression de l'article du cart
+function deleteArticleFromCart(item){
+    const deleteArticleFromCart= document.querySelector(
+        `article[data-id="${item.id}"][data-color="${item.color}"]`
+        )
+        deleteArticleFromCart.remove()
+}
+
+//Fonction pour suppression du produit dans le localStorage également
 function deleteDateFromCache(item){
     const key = `${item.id}-${item.color}`
     localStorage.removeItem(key)
@@ -201,13 +215,6 @@ function saveNewData(item){
     const key = `${item.id}-${item.color}`
     localStorage.setItem(key, saveData)
 }
-function deleteArticleFromCart(item){
-    const deleteArticleFromCart= document.querySelector(
-        `article[data-id="${item.id}"][data-color="${item.color}"]`
-        )
-        deleteArticleFromCart.remove()
-}
-    
 
 //Récupération des éléments des inputs selon leur ID
 const firstName = document.querySelector('#firstName')
@@ -216,16 +223,18 @@ const address = document.querySelector('#address')
 const city = document.querySelector('#city')
 const email = document.querySelector('#email')
 
-//Récupération des éléments pour les messages d'erreurs
+//Récupération des inputs indiquant un message d'erreur
 let errorFirstName = document.querySelector('#firstNameErrorMsg');
 let errorLastName = document.querySelector('#lastNameErrorMsg');
 let errorAddress = document.querySelector('#addressErrorMsg');
 let errorCity = document.querySelector('#cityErrorMsg')
 let errorEmail = document.querySelector('#emailErrorMsg');
 
+
+//Variables
 let valueFirstName, valueLastName, valueAddress, valueCity, valueEmail
 
-// Formulaire : valeur, caractères max, etc
+// Mise en place du Formulaire : valeur, caractères max, RegEx
 firstName.addEventListener("input", function(e){
     valueFirstName;
     if (e.target.value.length == 0){
@@ -260,7 +269,6 @@ lastName.addEventListener("input", function(e){
     else if (e.target.value.length < 3 || e.target.value.length > 25){
         errorLastName.innerText = " Le nom doit contenir entre 3 et 25 caractères "
         valueLastName = null
-        console.log("trop court ou long")
     }
 
     if (e.target.value.match(/^[a-z A-Z]{3,25}$/)){
@@ -342,22 +350,28 @@ email.addEventListener("input", (e) => {
     }
 })
 
+//Boutton "Commander"
 const orderButton = document.querySelector('#order')
 orderButton.addEventListener("click", (e) => submitForm(e))
 
 
+//Soumettre le formulaire
 function submitForm(e) {
     e.preventDefault()
     if(cart.length === 0) {
+        //Message d'erreur si le client va directement au panier sans rien ajouter à son panier
         alert("Ajoutez de magnifiques canapés à votre panier !")
         return
     }
+    //Mettre fin à l'exécution d'une fonction et définit une valeur à renvoyer à la fonction appelante
     if (ifFormIsInvalid()) return
 
 const body = addRequestBody()
 
+//Récupération de l'API order
 fetch("http://localhost:3000/api/products/order", {
     method: "POST",
+    //Convertir une valeur JavaScript en chaîne JSON
     body: JSON.stringify(body),
     headers: {
             "Accept": "application/json",
@@ -367,8 +381,10 @@ fetch("http://localhost:3000/api/products/order", {
         .then((res) => res.json())
         .then((data) => {
             const orderId = data.orderId
-            window.location.href = "/html/confirmation.html" + "?orderId=" + orderId
+            //la fenêtre de redirection doit afficher le numéro de commande : orderId
+            window.location.href = "/front/html/confirmation.html" + "?orderId=" + orderId
         })
+        //Si il y a une erreur, elle sera affichée
         .catch((err) => console.error(err))
 }
 
@@ -386,21 +402,25 @@ function ifFormIsInvalid(){
     })
 }
 
+
+//On appelle le body
 function addRequestBody() {
     const form = document.querySelector(".cart__order__form")
     const body = {
         contact:{
-            firstName: valueFirstName,
-            lastName: valueLastName,
-            address: valueAddress,
-            city: valueCity,
-            email: valueEmail
+            firstName: "valueFirstName",
+            lastName: "valueLastName",
+            address: "valueAddress",
+            city: "valueCity",
+            email: "valueEmail"
         },
         products: retrieveIdsFromCache()
     }
     return body
 }
 
+
+//On récupère les ids du cache 
 function retrieveIdsFromCache(){
     const numberOfProducts= localStorage.length
     const ids = []
@@ -411,6 +431,7 @@ function retrieveIdsFromCache(){
         const id = key.split("-")[0]
         ids.push(id)
     }
+    //retour des ids dans le tableau
     return ids
 }
 
