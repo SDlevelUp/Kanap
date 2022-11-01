@@ -2,17 +2,19 @@
 //....faire un array du total du cart
 const cart = []
 
-catchItemsFromCache()
+//Récupération des items du cache (stockage)
+recoupItemsFromCache()
 
 //Récupération des items isue du cache
-function catchItemsFromCache(){
+function recoupItemsFromCache(){
     //Voir le nombre d'entrée dans le panier
-    const numberOfItems = localStorage.length
+    const numberOfItems = localStorage.length;
     //Loop pour itérer sur toutes les clés du localStorage et 
     for(let i = 0; i < numberOfItems; i++){
+        const item = localStorage.getItem(localStorage.key(i)) || "" //Si item null => rien : ""
         //...on en fait un objet avec JSON.parse
-        const item = localStorage.getItem(localStorage.key(i)) || ""
         const itemObject = JSON.parse(item)
+        //..on le push : retourner la nouvelle taille du tableau
         cart.push(itemObject)
     }
 }
@@ -20,18 +22,46 @@ function catchItemsFromCache(){
 //Pour chaque éléments dans le cart on lui fabrique ses "attributs" issue du code HTML
 cart.forEach((item) => showItem(item))
 
-// On créer l'article
-function createArticle(item) {
+// Affichage des articles
+function showArticle(article) {
+    document.querySelector("#cart__items").appendChild(article)
+} 
+
+//Afficher l'objet
+function showItem(item) {
+    //On fait un article
+    const article = generateArticle(item)
+    //Insertion de la div de l'image
+    const divOfImage = generateImageDiv(item)
+    //Appender la div de l'image à l'article
+    article.appendChild(divOfImage)
+    // Insertion du content de la description du produit
+    const cardItemContent = generateCartContent(item)
+    article.appendChild(cardItemContent)
+    
+    //Récupération des fonctions de l'article, prix total + quantité
+    showArticle(article)
+    showTotalPrice()
+    showTotalQuantity()
+}
+
+// On met en place l'article
+function generateArticle(item) {
+    //Utilisation de createElement pour récupérer l'élément 'article'
     const article = document.createElement("article")
+    //Récupération de la class de l'élément
     article.classList.add("card__item")
+    //Ajout des attributs à l'élément HTML
     article.dataset.id = item.id
     article.dataset.color = item.color
     return article
 }
 
-//Récupération de l'image issue de la div
-function createImageDiv(item) {
+//Récupération de l'image issue de la div (code HTML)
+function generateImageDiv(item) {
+    //Utilisation de createElement pour récupérer l'élément 'div'
     const div = document.createElement("div")
+    //Récupération de la class de l'élément
     div.classList.add("cart__item__img")
     const image = document.createElement("img")
     image.src = item.imageUrl
@@ -40,49 +70,69 @@ function createImageDiv(item) {
     return div
 }
 
-// Récupération du content de la description
-function createContentDescription(item) { 
+// Récupération de la div: "cart_content"
+function generateCartContent(item) { 
     // Insertion de la div du content
     const cardItemContent = document.createElement("div")
     cardItemContent.classList.add("cart__item__content")
     // On créer les constantes pour les paramètres et de la description 
-    const description = createDesctiption(item)
-    const settings = createSettingsOfProducts(item)
-    
+    const description = generateDesctiption(item)
+    const settings = generateSettingsOfProducts(item)
+    //Appender les éléments description et setting
     cardItemContent.appendChild(description)
     cardItemContent.appendChild(settings)
     return cardItemContent
 }
 
-//Afficher l'article complet 
-function showItem(item) {
-    const article = createArticle(item)
-    //Insertion de la div de l'image
-    const divOfImage = createImageDiv(item)
-    article.appendChild(divOfImage)
-    // Insertion du content de la description du produit
-    const cardItemContent = createContentDescription(item)
-    article.appendChild(cardItemContent)
-    
-    showArticle(article)
-    showTotalPrice()
-    showTotalQuantity()
+// Création des spécifités des canapés qui s'afficheront
+function generateDesctiption(item) {
+    //On lui créer sa div
+    const description = document.createElement("div")
+    description.classList.add("cart__item__content__description")
+    // On lui insert le titre
+    const h2 = document.createElement("h2")
+    h2.textContent = item.name
+    // On lui insert le paragrahpe
+    const p = document.createElement("p")
+    p.textContent = item.color
+    // On lui insert le "paragraphe" du prix
+    const paragOfPrice = document.createElement("p")
+    paragOfPrice.textContent = item.price + " €"
+    // On appende tout les éléments
+    description.appendChild(h2)
+    description.appendChild(p)
+    description.appendChild(paragOfPrice)
+    return description
 }
 
-// Récupération de la quantité sur la partie quantité
+// Fonction pour appeler les paramètres de l'article (suppression, quantité)
+function generateSettingsOfProducts(item){
+    //Insertion div 
+    const settings = document.createElement("div")
+    settings.classList.add("cart__item__content__settings")
+    
+    addQuantitySettings(settings, item)
+    addDeleteSettings(settings, item)
+    return settings
+}
+
+// Récupération de la quantité 
 function addQuantitySettings(settings, item){
+    //Récupération de la div
     const quantity = document.createElement("div")
+    //Ajout de sa class
     quantity.classList.add("cart__item__content__settings__quantity")
-    //Ajout du p de la quantité
+    //Ajout du p (de la quantité)
     const p = document.createElement("p")
+    //Ajout du terme 
     p.textContent = " Qté : "
     quantity.appendChild(p)
-    // Insertion de l'élément "input" et ses éléments (type, name, min, max, ...)
+    // Insertion de l'élément "input" 
     const input = document.createElement("input")
-        
-    //Ajout des spécifités relatives à l'input(type, name, value, ...)
-    input.type = "number"
+    console.log("input", input)
+    //Ajout des spécifités relatives à l'input(type, name, value, min, max ...)
     input.classList.add("itemQuantity")
+    input.type = "number"
     input.name = "itemQuantity"
     input.min = "1"
     input.max = "100"
@@ -94,19 +144,22 @@ function addQuantitySettings(settings, item){
     settings.appendChild(quantity)
 }
 
-// Fonction pour appeler les paramètres de suppression
-function createSettingsOfProducts(item){
-    //Insertion div 
-    const settings = document.createElement("div")
-    settings.classList.add("cart__item__content__settings")
-    
-    addQuantitySettings(settings, item)
-    addDeleteSettings(settings, item)
-    return settings
+//Quand au click on augmente ou diminue la quantité, on récupère la nouvelle valeur
+function changeQuantityAndPrice(id, newValue, item){
+    //A chaque click de l'update de la quantité, l'id dont la quantité change s'affiche
+    const itemUpdate = cart.find((item) => item.id === id)
+    //Updater la quantité
+    itemUpdate.quantity = Number(newValue)
+    item.quantity = itemUpdate.quantity
+    //Appeler les fonctions qui vont recalculer le total : quantity and price
+    showTotalPrice()
+    showTotalQuantity()
+    saveNewDataToCache(item)
 }
 
 //Suppression de l'article au click
 function addDeleteSettings(settings, item){
+    //Récupération de la div de suppression d'un produit
     const div = document.createElement("div")
     div.classList.add("cart__item__content__settings__delete")
     div.addEventListener("click", () => deleteItem(item))
@@ -120,42 +173,19 @@ function addDeleteSettings(settings, item){
 
 //Suppression de l'article selectionné du cache et de la page cart
 function deleteItem(item){
+    //Donner un index quant au produit qui est sélectionné
     const itemToDelete = cart.findIndex(
+        //Filtre sur deux champs différents : la couleur et l'id
+        //...ils doivent correspondre à l'élément supprimer
         (product) => product.id === item.id && product.color === item.color
         )
+        //Supprimer un élément avec splice
         cart.splice(itemToDelete, 1)
+        console.log(cart)
         showTotalQuantity()
         showTotalPrice()
-        deleteDateFromCache(item)
+        deleteDataFromCache(item)
         deleteArticleFromCart(item)
-}
-
-// Création des spécifités des canapés qui s'afficheront
-function createDesctiption(item) {
-    //On lui créer sa div
-    const description = document.createElement("div")
-    description.classList.add("cart__item__content__description")
-    // On lui insert le titre
-    const h2 = document.createElement("h2")
-    h2.textContent = item.name
-    // On lui insert le paragrahpe
-    const p = document.createElement("p")
-    p.textContent = item.color
-    // On lui insert le paragraphe du prix
-    const paragOfPrice = document.createElement("p")
-    paragOfPrice.textContent = item.price + " €"
-    // On appende tout les éléments
-    description.appendChild(h2)
-    description.appendChild(p)
-    description.appendChild(paragOfPrice)
-    return description
-}
-
-
-
-// Affichage des articles
-function showArticle(article) {
-    document.querySelector("#cart__items").appendChild(article)
 }
 
 //Recalcule de la quantité au click dans le panier
@@ -183,39 +213,30 @@ function showTotalQuantity(){
     totalQuantity.textContent = total
 }
 
-//Quand au click on augmente ou diminue la quantité, on récupère la nouvelle valeur
-function changeQuantityAndPrice(id, newValue, item){
-    const itemUpdate = cart.find((item) => item.id === id)
-    itemUpdate.quantity = Number(newValue)
-    item.quantity = itemUpdate.quantity
-    //Appeler les fonctions qui vont recalculer le total : quantity and price
-    showTotalPrice()
-    showTotalQuantity()
-    saveNewData(item)
-}
-
 //Fonction de suppression de l'article du cart
 function deleteArticleFromCart(item){
     const deleteArticleFromCart= document.querySelector(
+        //Suppression de l'article qui a l'id
         `article[data-id="${item.id}"][data-color="${item.color}"]`
         )
         deleteArticleFromCart.remove()
-}
-
-//Fonction pour suppression du produit dans le localStorage également
-function deleteDateFromCache(item){
-    const key = `${item.id}-${item.color}`
-    localStorage.removeItem(key)
+        alert("L'article sera supprimer de votre panier")
 }
 
 //Fonction d'enregiement des nouvelles valeurs updater
-function saveNewData(item){
+function saveNewDataToCache(item){
     const saveData = JSON.stringify(item)
     //On change la clé de base avec la vraie valeur du produit dans le panier (Callycé noir + Callycé blanc, ...)
     const key = `${item.id}-${item.color}`
+    //Ajouter la clé dans le LS
     localStorage.setItem(key, saveData)
 }
 
+//Fonction pour suppression du produit dans le localStorage également
+function deleteDataFromCache(item){
+    const key = `${item.id}-${item.color}`
+    localStorage.removeItem(key)
+}
 //Récupération des éléments des inputs selon leur ID
 const firstName = document.querySelector('#firstName')
 const lastName = document.querySelector('#lastName')
@@ -229,7 +250,6 @@ let errorLastName = document.querySelector('#lastNameErrorMsg');
 let errorAddress = document.querySelector('#addressErrorMsg');
 let errorCity = document.querySelector('#cityErrorMsg')
 let errorEmail = document.querySelector('#emailErrorMsg');
-
 
 //Variables
 let valueFirstName, valueLastName, valueAddress, valueCity, valueEmail
@@ -354,7 +374,6 @@ email.addEventListener("input", (e) => {
 const orderButton = document.querySelector('#order')
 orderButton.addEventListener("click", (e) => submitForm(e))
 
-
 //Soumettre le formulaire
 function submitForm(e) {
     e.preventDefault()
@@ -384,7 +403,7 @@ fetch("http://localhost:3000/api/products/order", {
             //la fenêtre de redirection doit afficher le numéro de commande : orderId
             window.location.href = "/front/html/confirmation.html" + "?orderId=" + orderId
         })
-        //Si il y a une erreur, elle sera affichée
+        //Si il y a une erreur, affichage dans la console
         .catch((err) => console.error(err))
 }
 
@@ -402,7 +421,6 @@ function ifFormIsInvalid(){
     })
 }
 
-
 //On appelle le body
 function addRequestBody() {
     const form = document.querySelector(".cart__order__form")
@@ -419,12 +437,13 @@ function addRequestBody() {
     return body
 }
 
-
 //On récupère les ids du cache 
 function retrieveIdsFromCache(){
-    const numberOfProducts= localStorage.length
+    //Affichage du nombre de produits dans le localStorage
+    const numberOfProducts = localStorage.length
+    //Récupération + affichage ids dans un tableau 
     const ids = []
-
+    //Boucle for pour récupérer les clés des produits
     for(let i = 0; i < numberOfProducts; i++) {
         //Récupération des clés produits
         const key = localStorage.key(i)

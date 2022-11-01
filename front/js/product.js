@@ -1,4 +1,4 @@
-//Redirection de l'URL des canapés vers la page d'ajout au panier
+//Redirection de l'URL des canapés vers la page panier
 let productId = new URL(window.location.href).searchParams.get("id")
   
     //Si l'Id n'est pas null...
@@ -9,16 +9,15 @@ let productId = new URL(window.location.href).searchParams.get("id")
     }
 
 // Utilisation de la méthode fetch qui permet d'exécuter des requêtes HTTP sans avoir besoin de recharger la page du navigateur
-
+//..et afficher les produits
 fetch("http://localhost:3000/api/products/" + productId)
-
 // Dès que la page est chargé, tout est récupérer
-
+//La méthode .then() est une fonction qui renvoie un objet Promise
   .then((res) => res.json())
-  .then((res) => manipPanier(res))
+  .then((res) => holdData(res))
 
-// Création de la fonction globale pour ajouter les canapés au panier
-function manipPanier(canapé) {
+// Création de la fonction globale pour ajouter les canapés sur la page d'acceuil
+function holdData(canapé) {
     // Récupérer des éléments du produit depuis l'API
     const {altTxt, colors, description, imageUrl, name, price} = canapé
     //On réassigne les variable, let itemPrice, etc
@@ -34,7 +33,6 @@ function manipPanier(canapé) {
 }
 
 // Création de la fonction pour ajouter l'image des canapés
-
 function addImage(imageUrl, altTxt) {
      // Constante pour afficher l'image du canapé
     const image = document.createElement("img")
@@ -80,7 +78,7 @@ function addColors(colors) {
     // Ajout d'une condition si le select est null
     if(select != null) {
     colors.forEach((color) => {
-        const option = document.createElement("option")
+    const option = document.createElement("option")
     option.value = color
     option.textContent = color
     select.appendChild(option)
@@ -103,8 +101,9 @@ function clickToOrder (){
 
 // Storer les éléments dans le localStorage
 function saveOrder(color, quantity){ 
+    //Afficher les produits avec des ids différents et couleurs différentes
     const key = `${productId}-${color}`
-    const manipPanier = {
+    const holdData = {
         id:productId,
         color: color,
         quantity: Number(quantity),
@@ -114,13 +113,13 @@ function saveOrder(color, quantity){
         name: productName
     }
     // Envoie au localStorage des éléments des canapés
-    localStorage.setItem(key, JSON.stringify(manipPanier))
+    localStorage.setItem(key, JSON.stringify(holdData))
 }
 
 // Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quanto+ité = 0
 function orderNotValid(color, quantity){
     if(color == null || color === "" || quantity == null) {
-        alert("Choisissez une quantité entre 1  et 100, et une couleur")
+        alert("Choisissez une quantité entre 1 et 100, et une couleur")
         return true
     }
 }
