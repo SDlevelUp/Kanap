@@ -1,3 +1,5 @@
+/*********************************** PARTIE PRODUCT *************************************/ 
+
 //Redirection de l'URL des canapés vers la page panier
 let productId = new URL(window.location.href).searchParams.get("id")
   
@@ -99,11 +101,13 @@ function clickToOrder (){
     window.location.href = "cart.html"
 }
 
-// Storer les éléments dans le localStorage
+// Storer les produits dans le localStorage
 function saveOrder(color, quantity){ 
     //Afficher les produits avec des ids différents et couleurs différentes
+    // ne pas oublier qu'il ne doit pasa y avoir d'espace entre le " - "
     const key = `${productId}-${color}`
     const holdData = {
+        //On remet les éléments des produits ; id, couleur, quantité, prix
         id:productId,
         color: color,
         quantity: Number(quantity),
@@ -112,12 +116,13 @@ function saveOrder(color, quantity){
         altTxt: altText,
         name: productName
     }
-    // Envoie au localStorage des éléments des canapés
+    // Envoie au localStorage des canapés
     localStorage.setItem(key, JSON.stringify(holdData))
 }
 
-// Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quanto+ité = 0
+// Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quantité = 0
 function orderNotValid(color, quantity){
+    //Si auaune couleur ou quantité n'est choisie
     if(color == null || color === "" || quantity == null) {
         alert("Choisissez une quantité entre 1 et 100, et une couleur")
         return true

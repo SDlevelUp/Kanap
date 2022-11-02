@@ -1,3 +1,5 @@
+/*********************************** PARTIE CART *************************************/ 
+
 //On souhaite récupérer un objet, on va du coup
 //....faire un array du total du cart
 const cart = []
@@ -51,7 +53,7 @@ function generateArticle(item) {
     const article = document.createElement("article")
     //Récupération de la class de l'élément
     article.classList.add("card__item")
-    //Ajout des attributs à l'élément HTML
+    //Ajout des attributs à l'élément HTML avec dataset
     article.dataset.id = item.id
     article.dataset.color = item.color
     return article
@@ -64,9 +66,11 @@ function generateImageDiv(item) {
     //Récupération de la class de l'élément
     div.classList.add("cart__item__img")
     const image = document.createElement("img")
+    //Récupération des attribut altTxt et ImageUrl des produits
     image.src = item.imageUrl
     image.alt = item.altTxt
     div.appendChild(image)
+
     return div
 }
 
@@ -81,6 +85,7 @@ function generateCartContent(item) {
     //Appender les éléments description et setting
     cardItemContent.appendChild(description)
     cardItemContent.appendChild(settings)
+
     return cardItemContent
 }
 
@@ -102,6 +107,7 @@ function generateDesctiption(item) {
     description.appendChild(h2)
     description.appendChild(p)
     description.appendChild(paragOfPrice)
+
     return description
 }
 
@@ -113,6 +119,7 @@ function generateSettingsOfProducts(item){
     
     addQuantitySettings(settings, item)
     addDeleteSettings(settings, item)
+
     return settings
 }
 
@@ -182,8 +189,10 @@ function deleteItem(item){
         //Supprimer un élément avec splice
         cart.splice(itemToDelete, 1)
         console.log(cart)
+        //On affiche : la nouvelle quantité, prix
         showTotalQuantity()
         showTotalPrice()
+        //Le data et l'article sont supprimé du cache et du cart
         deleteDataFromCache(item)
         deleteArticleFromCart(item)
 }
@@ -194,9 +203,11 @@ function showTotalPrice(){
     let total = 0
     const totalPrice = document.querySelector("#totalPrice")
     cart.forEach((item) => {
+        //Calcul du nouveau prix 
         const totalUnitPrice = item.price * item.quantity
         total = total + totalUnitPrice
     })
+    //On affiche le prix total
     totalPrice.textContent = total
 }
 
@@ -206,10 +217,11 @@ function showTotalQuantity(){
     let total = 0
     const totalQuantity = document.querySelector("#totalQuantity")
     cart.forEach((item) => {
+        //Calcul de la nouvelle quantité
         const totalUnitQuantity = item.quantity
         total = total + totalUnitQuantity
     })
-    //Affichage du total
+    //On affiche la quantoté totale
     totalQuantity.textContent = total
 }
 
@@ -219,6 +231,7 @@ function deleteArticleFromCart(item){
         //Suppression de l'article qui a l'id
         `article[data-id="${item.id}"][data-color="${item.color}"]`
         )
+        //L'article est supprimé du cart
         deleteArticleFromCart.remove()
         alert("L'article sera supprimer de votre panier")
 }
@@ -229,11 +242,12 @@ function saveNewDataToCache(item){
     //On change la clé de base avec la vraie valeur du produit dans le panier (Callycé noir + Callycé blanc, ...)
     const key = `${item.id}-${item.color}`
     //Ajouter la clé dans le LS
-    localStorage.setItem(key, saveData)
+    localStorage.setItem(key, saveData)//saveDate : sauvegarde de la nouvelle valeur
 }
 
 //Fonction pour suppression du produit dans le localStorage également
 function deleteDataFromCache(item){
+    //On récupére l'itemId et l'itemColor des canapés
     const key = `${item.id}-${item.color}`
     localStorage.removeItem(key)
 }
@@ -409,20 +423,27 @@ fetch("http://localhost:3000/api/products/order", {
 
 //Validation du formulaire et des champs
 function ifFormIsInvalid(){
+    //Récupération du formulaire
     const form = document.querySelector(".cart__order__form") 
+    //Sélection de tout les inputs
     const inputs = form.querySelectorAll("input")
+    //Boucle pour tout les inputs
     inputs.forEach((input) => {
+        //Si aucun input n'est rempli
+        //..Message d'erreur
         if(input.value === "") {
             alert("Remplissez correctement le formulaire SVP")
             e.preventDefault()
+            //Retourner vrai
             return true
-        }
+        }//Ou faux
         return false
     })
 }
 
-//On appelle le body
+//On envoie une requette au body
 function addRequestBody() {
+    //On rappelle le formulaire
     const form = document.querySelector(".cart__order__form")
     const body = {
         contact:{
@@ -448,6 +469,7 @@ function retrieveIdsFromCache(){
         //Récupération des clés produits
         const key = localStorage.key(i)
         const id = key.split("-")[0]
+        //Pusher les ids
         ids.push(id)
     }
     //retour des ids dans le tableau

@@ -1,3 +1,5 @@
+/*********************************** PARTIE PAGE D'ACCEUIL (SCRIPT) *************************************/ 
+
 // Utilisation de la méthode fetch qui permet de récupérer les données
 fetch("http://localhost:3000/api/products")
   .then((res) => {
