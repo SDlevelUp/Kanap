@@ -88,7 +88,7 @@ function addColors(colors) {
   }
 }
 
-// Constante qui va lire les des données
+// Constante qui va lire les des données et les envoyées vers la page panier
 const button = document.querySelector("#addToCart");
 button.addEventListener("click", clickToOrder);
 
@@ -104,7 +104,7 @@ function clickToOrder() {
 // Storer les produits dans le localStorage
 function saveOrder(color, quantity) {
   //Afficher les produits avec des ids différents et couleurs différentes
-  // ne pas oublier qu'il ne doit pasa y avoir d'espace entre le " - "
+  // ne pas oublier qu'il ne doit pas y avoir d'espace entre le " - "
   const key = `${productId}-${color}`;
   const holdData = {
     //On remet les éléments des produits ; id, couleur, quantité, prix
@@ -122,7 +122,7 @@ function saveOrder(color, quantity) {
 
 // Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quantité = 0
 function orderNotValid(color, quantity) {
-  //Si auaune couleur ou quantité n'est choisie
+  //Si aucune couleur ou quantité n'est choisie
   if (color == null || color === "" || quantity == null) {
     alert("Choisissez une quantité entre 1 et 100, et une couleur");
     return true;
