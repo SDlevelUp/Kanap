@@ -391,7 +391,7 @@ const orderButton = document.querySelector("#order");
 orderButton.addEventListener("click", (e) => submitForm(e));
 
 //Soumettre le formulaire
-function submitForm(e) {
+function submitForm() {
   e.preventDefault();
   if (cart.length === 0) {
     //Message d'erreur si le client va directement au panier sans rien ajouter à son panier
@@ -425,7 +425,7 @@ function submitForm(e) {
 }
 
 //Validation du formulaire et des champs
-function ifFormIsInvalid() {
+function ifFormIsInvalid(e) {
   //Récupération du formulaire
   const form = document.querySelector(".cart__order__form");
   //Sélection de tout les inputs
