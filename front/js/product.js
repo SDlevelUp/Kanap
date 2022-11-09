@@ -6,8 +6,8 @@ let productId = new URL(window.location.href).searchParams.get("id");
 //Si l'Id n'est pas null...
 if (productId != null) {
   //On récupère le prix, imgUrl, ...
-  let itemPrice = 0;
-  let imgUrl, altText, productName;
+  var itemPrice = 0;
+  var imgUrl, altText, productName;
 }
 
 // Utilisation de la méthode fetch qui permet d'exécuter des requêtes HTTP sans avoir besoin de recharger la page du navigateur
