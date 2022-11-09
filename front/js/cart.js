@@ -391,7 +391,7 @@ const orderButton = document.querySelector("#order");
 orderButton.addEventListener("click", (e) => submitForm(e));
 
 //Soumettre le formulaire
-function submitForm() {
+function submitForm(e) {
   e.preventDefault();
   if (cart.length === 0) {
     //Message d'erreur si le client va directement au panier sans rien ajouter à son panier
