@@ -252,18 +252,18 @@ function deleteDataFromCache(item) {
   localStorage.removeItem(key);
 }
 //Récupération des éléments des inputs selon leur ID
-const firstName = document.querySelector("#firstName");
-const lastName = document.querySelector("#lastName");
-const address = document.querySelector("#address");
-const city = document.querySelector("#city");
-const email = document.querySelector("#email");
+const firstName = document.getElementById("firstName");
+const lastName = document.getElementById("lastName");
+const address = document.getElementById("address");
+const city = document.getElementById("city");
+const email = document.getElementById("email");
 
 //Récupération des inputs indiquant un message d'erreur
-let errorFirstName = document.querySelector("#firstNameErrorMsg");
-let errorLastName = document.querySelector("#lastNameErrorMsg");
-let errorAddress = document.querySelector("#addressErrorMsg");
-let errorCity = document.querySelector("#cityErrorMsg");
-let errorEmail = document.querySelector("#emailErrorMsg");
+let errorFirstName = document.getElementById("firstNameErrorMsg");
+let errorLastName = document.getElementById("lastNameErrorMsg");
+let errorAddress = document.getElementById("addressErrorMsg");
+let errorCity = document.getElementById("cityErrorMsg");
+let errorEmail = document.getElementById("emailErrorMsg");
 
 //Variables
 let valueFirstName, valueLastName, valueAddress, valueCity, valueEmail;
@@ -276,20 +276,7 @@ firstName.addEventListener("input", function (e) {
     valueFirstName = null;
   } else if (e.target.value.length < 3 || e.target.value.length > 25) {
     errorFirstName.innerText =
-      " Le prénom doit contenir entre 3 et 25 caractères ";
-    valueFirstName = null;
-  }
-  if (e.target.value.match(/^[a-z A-Z]{3,25}$/)) {
-    errorFirstName.innerText = " ";
-    valueFirstName = e.target.value;
-  }
-  if (
-    !e.target.value.match(/^[a-z A-Z]{3,25}$/) &&
-    e.target.value.length > 3 &&
-    e.target.value.length < 25
-  ) {
-    errorFirstName.innerText =
-      " Le prénom de doit pas contenir de caractère spéciaux, chiffres ou accent ";
+      " Le champ doit contenir entre 3 et 25 caractères ";
     valueFirstName = null;
   }
 });
@@ -300,21 +287,8 @@ lastName.addEventListener("input", function (e) {
     errorLastName.innerText = " ";
     valueLastName = null;
   } else if (e.target.value.length < 3 || e.target.value.length > 25) {
-    errorLastName.innerText = " Le nom doit contenir entre 3 et 25 caractères ";
-    valueLastName = null;
-  }
-
-  if (e.target.value.match(/^[a-z A-Z]{3,25}$/)) {
-    errorLastName.innerText = " ";
-    valueLastName = e.target.value;
-  }
-  if (
-    !e.target.value.match(/^[a-z A-Z]{3,25}$/) &&
-    e.target.value.length > 3 &&
-    e.target.value.length < 25
-  ) {
     errorLastName.innerText =
-      " Le nom de doit pas contenir de caractère spéciaux, chiffres ou accent ";
+      " Le champ doit contenir entre 3 et 25 caractères ";
     valueLastName = null;
   }
 });
@@ -325,22 +299,12 @@ address.addEventListener("input", function (e) {
     errorAddress.innerText = " ";
     valueAddress = null;
   } else if (e.target.value.length < 3 || e.target.value.length > 35) {
-    errorAddress.innerText =
-      " L'adresse doit contenir entre 3 et 35 caractères ";
+    errorAddress.innerText = " L'adresse doit commencer par des chiffres ";
     valueAddress = null;
   }
-
   if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)) {
     errorAddress.innerText = " ";
     valueAddress = e.target.value;
-  }
-  if (
-    !e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,25}$/) &&
-    e.target.value.length > 3 &&
-    e.target.value.length < 35
-  ) {
-    errorAddress.innerText = " L'adresse doit commencer par des chiffres ";
-    valueAddress = null;
   }
 });
 
@@ -350,20 +314,7 @@ city.addEventListener("input", function (e) {
     errorCity.innerText = " ";
     valueCity = null;
   } else if (e.target.value.length < 3 || e.target.value.length > 25) {
-    errorCity.innerText = " La ville doit contenir entre 3 et 25 caractères ";
-    valueCity = null;
-  }
-  if (e.target.value.match(/^[a-z A-Z]{3,25}$/)) {
-    errorCity.innerText = " ";
-    valueCity = e.target.value;
-  }
-  if (
-    !e.target.value.match(/^[a-z A-Z]{3,25}$/) &&
-    e.target.value.length > 3 &&
-    e.target.value.length < 25
-  ) {
-    errorCity.innerText =
-      " La ville de doit pas contenir de caractère spéciaux, chiffres ou accent ";
+    errorCity.innerText = " Le champ doit contenir entre 3 et 25 caractères ";
     valueCity = null;
   }
 });
@@ -373,8 +324,6 @@ email.addEventListener("input", (e) => {
     errorEmail.innerText = " ";
     valueEmail = null;
   } else if (e.target.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-    errorEmail.innerText = " ";
-    valueEmail = e.target.value;
   }
   if (
     !e.target.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/) &&
@@ -386,23 +335,20 @@ email.addEventListener("input", (e) => {
   }
 });
 
-//Boutton "Commander"
-const orderButton = document.querySelector("#order");
-orderButton.addEventListener("click", (e) => submitForm(e));
-
 //Soumettre le formulaire
 function submitForm(e) {
+  //Évènement qui permet de ne pas rafraichir
   e.preventDefault();
   if (cart.length === 0) {
     //Message d'erreur si le client va directement au panier sans rien ajouter à son panier
     alert("Ajoutez de magnifiques canapés à votre panier !");
     return;
   }
+
   //Mettre fin à l'exécution d'une fonction et définit une valeur à renvoyer à la fonction appelante
   if (ifFormIsInvalid()) return;
 
   const body = addRequestBody();
-
   //Récupération de l'API order
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
@@ -424,6 +370,10 @@ function submitForm(e) {
     .catch((err) => console.error(err));
 }
 
+//Boutton "Commander"
+const orderButton = document.querySelector("#order");
+orderButton.addEventListener("click", (e) => submitForm(e));
+
 //Validation du formulaire et des champs
 function ifFormIsInvalid(e) {
   //Récupération du formulaire
@@ -435,7 +385,7 @@ function ifFormIsInvalid(e) {
     //Si aucun input n'est rempli
     //..Message d'erreur
     if (input.value === "") {
-      alert("Remplissez correctement le formulaire SVP");
+      alert("Remplissez tout les champs du formulaire svp");
       e.preventDefault();
       //Retourner vrai
       return true;
@@ -450,11 +400,11 @@ function addRequestBody() {
   const form = document.querySelector(".cart__order__form");
   const body = {
     contact: {
-      firstName: "valueFirstName",
-      lastName: "valueLastName",
-      address: "valueAddress",
-      city: "valueCity",
-      email: "valueEmail",
+      firstName: form.elements.firstName.value,
+      lastName: form.elements.lastName.value,
+      address: form.elements.address.value,
+      city: form.elements.city.value,
+      email: form.elements.email.value,
     },
     products: retrieveIdsFromCache(),
   };

@@ -49,7 +49,7 @@ function addImage(imageUrl, altTxt) {
 // Création de la fonction pour ajouter le nom des canapés
 function addTitle(name) {
   // Constante pour afficher le titre du canapé
-  const h1 = document.querySelector("#title");
+  const h1 = document.getElementById("title");
   if (h1 != null) {
     h1.textContent = name;
   }
@@ -58,7 +58,7 @@ function addTitle(name) {
 // Ajouter le prix des canapés
 function addPrice(price) {
   // Constante pour afficher le prix du canapé
-  const span = document.querySelector("#price");
+  const span = document.getElementById("price");
   if (span != null) {
     span.textContent = price;
   }
@@ -67,7 +67,7 @@ function addPrice(price) {
 // Ajouter la description des canapés
 function addDescription(description) {
   // Constante pour afficher la description du canapé
-  const p = document.querySelector("#description");
+  const p = document.getElementById("description");
   if (p != null) {
     p.textContent = description;
   }
@@ -76,7 +76,7 @@ function addDescription(description) {
 // Ajouter la couleur du canapé commandé
 function addColors(colors) {
   // Constante pour afficher la couleur du canapé
-  const select = document.querySelector("#colors");
+  const select = document.getElementById("colors");
   // Ajout d'une condition si le select est null
   if (select != null) {
     colors.forEach((color) => {
@@ -89,12 +89,12 @@ function addColors(colors) {
 }
 
 // Constante qui va lire les des données et les envoyées vers la page panier
-const button = document.querySelector("#addToCart");
+const button = document.getElementById("addToCart");
 button.addEventListener("click", clickToOrder);
 
 function clickToOrder() {
-  const color = document.querySelector("#colors").value;
-  const quantity = document.querySelector("#quantity").value;
+  const color = document.getElementById("colors").value;
+  const quantity = document.getElementById("quantity").value;
   //Si c'est invalide : message d'erreur
   if (orderNotValid(color, quantity)) return;
   saveOrder(color, quantity);
