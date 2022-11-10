@@ -279,6 +279,10 @@ firstName.addEventListener("input", function (e) {
       " Le champ doit contenir entre 3 et 25 caractères ";
     valueFirstName = null;
   }
+  if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)) {
+    errorFirstName.innerText = " ";
+    valueFirstName = e.target.value;
+  }
 });
 
 lastName.addEventListener("input", function (e) {
@@ -291,6 +295,10 @@ lastName.addEventListener("input", function (e) {
       " Le champ doit contenir entre 3 et 25 caractères ";
     valueLastName = null;
   }
+  if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)) {
+    errorLastName.innerText = " ";
+    valueLastName = e.target.value;
+  }
 });
 
 address.addEventListener("input", function (e) {
@@ -299,7 +307,7 @@ address.addEventListener("input", function (e) {
     errorAddress.innerText = " ";
     valueAddress = null;
   } else if (e.target.value.length < 3 || e.target.value.length > 35) {
-    errorAddress.innerText = " L'adresse doit commencer par des chiffres ";
+    errorAddress.innerText = " Le champ doit commencer par un chiffre ";
     valueAddress = null;
   }
   if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)) {
@@ -317,6 +325,10 @@ city.addEventListener("input", function (e) {
     errorCity.innerText = " Le champ doit contenir entre 3 et 25 caractères ";
     valueCity = null;
   }
+  if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)) {
+    errorCity.innerText = " ";
+    valueCity = e.target.value;
+  }
 });
 
 email.addEventListener("input", (e) => {
@@ -330,7 +342,7 @@ email.addEventListener("input", (e) => {
     !e.target.value.length == 0
   ) {
     errorEmail.innerText =
-      " L'email est incorrecte, saisissez un mail de type: pierredupont@hotmail.fr";
+      " Le champ saisi est incorrect, il doit être de type : pierredupont@hotmail.fr";
     valueEmail = null;
   }
 });
