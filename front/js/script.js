@@ -49,8 +49,7 @@ function addImage(imageUrl, altTxt) {
   const image = document.createElement("img");
   image.src = imageUrl;
   image.alt = altTxt;
-  image.removeAttribute = "title";
-  image.removeAttribute = "style";
+
   return image;
 }
 
