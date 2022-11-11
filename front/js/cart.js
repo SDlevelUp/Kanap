@@ -5,10 +5,10 @@
 const cart = [];
 
 //Récupération des items du cache (stockage)
-recoupItemsFromCache();
+retrieveItemsFromCache();
 
 //Récupération des items issu du cache
-function recoupItemsFromCache() {
+function retrieveItemsFromCache() {
   //Voir le nombre d'entrée dans le panier
   const numberOfItems = localStorage.length;
   //Loop pour itérer sur toutes les clés du localStorage et
@@ -236,7 +236,7 @@ function deleteArticleFromCart(item) {
   alert("L'article sera supprimer de votre panier");
 }
 
-//Fonction d'enregistrement des nouvelles valeurs updater
+//Fonction d'enregistrement des nouvelles valeurs updater : (prix, quantité, canapés, ...)
 function saveNewDataToCache(item) {
   const saveData = JSON.stringify(item);
   //On change la clé de base avec la vraie valeur du produit dans le panier (Callycé noir + Callycé blanc, ...)
@@ -251,6 +251,8 @@ function deleteDataFromCache(item) {
   const key = `${item.id}-${item.color}`;
   localStorage.removeItem(key);
 }
+
+/********************** FORMULAIRE **********************/
 //Récupération des éléments des inputs selon leur ID
 const firstName = document.getElementById("firstName");
 const lastName = document.getElementById("lastName");
@@ -382,6 +384,7 @@ function submitForm(e) {
     .catch((err) => console.error(err));
 }
 
+/********************COMMANDER********************/
 //Boutton "Commander"
 const orderButton = document.querySelector("#order");
 orderButton.addEventListener("click", (e) => submitForm(e));

@@ -18,18 +18,18 @@ fetch("http://localhost:3000/api/products/" + productId)
   .then((res) => res.json())
   .then((res) => holdData(res));
 
-// Création de la fonction globale pour ajouter les canapés sur la page d'acceuil
+// Création de la fonction globale pour ajouter les canapés sur la page produit
 function holdData(canapé) {
   // Récupérer des éléments du produit
   const { altTxt, colors, description, imageUrl, name, price } = canapé;
   //On réassigne les variable, let itemPrice, etc
-  itemPrice = price;
+  itemPrice = price; // A LAISSER
   imgUrl = imageUrl;
   altText = altTxt;
   productName = name;
   addImage(imageUrl, altTxt);
   addTitle(name);
-  addPrice(price);
+  addPrice(price); // A LAISSER
   addDescription(description);
   addColors(colors);
 }
@@ -96,28 +96,9 @@ function clickToOrder() {
   const color = document.getElementById("colors").value;
   const quantity = document.getElementById("quantity").value;
   //Si c'est invalide : message d'erreur
-  if (orderNotValid(color, quantity)) return;
+  if (orderNotValid(color, quantity));
   saveOrder(color, quantity);
   window.location.href = "cart.html";
-}
-
-// Storer les produits dans le localStorage
-function saveOrder(color, quantity) {
-  //Afficher les produits avec des ids différents et couleurs différentes
-  // ne pas oublier qu'il ne doit pas y avoir d'espace entre le " - "
-  const key = `${productId}-${color}`;
-  const holdData = {
-    //On remet les éléments des produits ; id, couleur, quantité, prix
-    id: productId,
-    color: color,
-    quantity: Number(quantity),
-    price: itemPrice,
-    imageUrl: imgUrl,
-    altTxt: altText,
-    name: productName,
-  };
-  // Envoie au localStorage des canapés
-  localStorage.setItem(key, JSON.stringify(holdData));
 }
 
 // Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quantité = 0
@@ -127,4 +108,41 @@ function orderNotValid(color, quantity) {
     alert("Choisissez une quantité entre 1 et 100, et une couleur");
     return true;
   }
+}
+
+// Storer les produits dans le localStorage
+function saveOrder(color, quantity) {
+  //Afficher les produits avec des ids différents et couleurs différentes
+
+  let contentOfCard = JSON.parse(localStorage.getItem("holdData")) || [];
+  contentOfCard = Array.from(contentOfCard);
+  console.log(contentOfCard);
+  // const key = `${productId}-${color}`;
+  const holdData = {
+    //On remet les éléments des produits ; id, couleur, quantité, prix
+    id: productId,
+    color: color,
+    quantity: Number(quantity),
+    price: itemPrice, // A laisser : prix s'affiche sur la page cart
+    imageUrl: imgUrl,
+    altTxt: altText,
+    name: productName,
+  };
+  let allInCard = contentOfCard.findIndex(
+    (item) => item.id == holdData.id && item.color == holdData.color
+  );
+  console.log(allInCard);
+  //SI PAS PRESENT
+  if (allInCard == -1) {
+    contentOfCard.push(holdData);
+    // localStorage.setItem("holdData", JSON.stringify(holdData));
+  } else {
+    contentOfCard[allInCard].quantity = parseInt(
+      contentOfCard[allInCard].quantity
+    );
+    holdData.quantity = parseInt(holdData.quantity);
+    // contentOfCard[allInCard].quantity;
+    contentOfCard[allInCard].quantity += holdData.quantity;
+  }
+  localStorage.setItem("holdData", JSON.stringify(holdData));
 }
