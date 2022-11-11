@@ -377,6 +377,7 @@ function submitForm(e) {
     .then((data) => {
       const orderId = data.orderId;
       //la fenêtre de redirection doit afficher le numéro de commande : orderId
+      localStorage.setItem("holdData", JSON.stringify([]));
       window.location.href =
         "/front/html/confirmation.html" + "?orderId=" + orderId;
     })

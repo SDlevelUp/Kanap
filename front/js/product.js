@@ -97,8 +97,8 @@ function clickToOrder() {
   const quantity = document.getElementById("quantity").value;
   //Si c'est invalide : message d'erreur
   if (orderNotValid(color, quantity));
-  saveOrder(color, quantity);
-  window.location.href = "cart.html";
+  // saveOrder(color, quantity);
+  // window.location.href = "cart.html";
 }
 
 // Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quantité = 0
@@ -107,6 +107,9 @@ function orderNotValid(color, quantity) {
   if (color == null || color === "" || quantity == null) {
     alert("Choisissez une quantité entre 1 et 100, et une couleur");
     return true;
+  } else {
+    saveOrder(color, quantity);
+    window.location.href = "cart.html";
   }
 }
 
