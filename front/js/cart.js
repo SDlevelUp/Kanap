@@ -11,7 +11,7 @@ retrieveLocalStorage();
 function retrieveLocalStorage() {
   //Loop pour itérer sur toutes les clés du localStorage et
   for (let i = 0; i < localStorage.length; i++) {
-    const item = localStorage.getItem(localStorage.key(i));
+    const item = localStorage.getItem(localStorage.key(i)) || "";
     //...on en fait un objet avec JSON.parse
     const itemArray = JSON.parse(item);
     //..on le push : retourner la nouvelle taille du tableau
@@ -20,46 +20,41 @@ function retrieveLocalStorage() {
 }
 
 //Pour chaque éléments dans le cart on lui fabrique ses "attributs" issue du code HTML
-cart.forEach((item) => showCanapé(item));
+cart.forEach((item) => showItem(item));
 
-/*********** OK ***********/
-//Afficher le panier
-function showCanapé(item, data) {
-  //On fait un article
-  const article = generateArticle(item);
-
-  //Insertion de la div de l'image
-  const img = generateImageDiv(item);
-
-  // Insertion du content de la description du produit
-  const content = generateCartContent(item, data);
-
-  //Récupération des fonctions de l'article, prix total + quantité
-  showTotalPrice();
-  showTotalQuantity();
-
-  //Appender la div de l'image à l'article
-  article.appendChild(img);
-  // Insertion du content de la description du produit
-  article.appendChild(content);
+// Affichage des articles
+function showArticle(article) {
+  document.querySelector("#cart__items").appendChild(article);
 }
 
-/******OK********/
+/*********** OK ***********/
+//Afficher l'objet
+function showItem(item) {
+  //On fait un article
+  const article = generateArticle(item);
+  //Insertion de la div de l'image
+  const divOfImage = generateImageDiv(item);
+  //Appender la div de l'image à l'article
+  article.appendChild(divOfImage);
+  // Insertion du content de la description du produit
+  const cardItemContent = generateCartContent(item);
+  article.appendChild(cardItemContent);
+
+  //Récupération des fonctions de l'article, prix total + quantité
+  showArticle(article);
+  showTotalPrice();
+  showTotalQuantity();
+}
+
 // On met en place l'article
 function generateArticle(item) {
-  const cartItems = document.getElementById("cart__items");
   //Utilisation de createElement pour récupérer l'élément 'article'
-
   const article = document.createElement("article");
-
   //Récupération de la class de l'élément
   article.classList.add("card__item");
   //Ajout des attributs à l'élément HTML avec dataset
   article.dataset.id = item.id;
-  article.dataset.colors = item.color;
-
-  cartItems.appendChild(article);
-
+  article.dataset.color = item.color;
   return article;
 }
 
@@ -174,12 +169,10 @@ function addQuantitySettings(item) {
 }
 
 //Quand au click on augmente ou diminue la quantité, on récupère la nouvelle valeur
-function changePriceAndQuantity(item, newValue) {
-  const itemToChange = cart.find(
-    (product) => product.id === item.id && product.color === item.color
-  );
-  itemToChange.quantity = Number(newValue);
-  item.quantity = itemToChange.quantity;
+function changeQuantityAndPrice(id, item, newValue) {
+  const itemUpdate = cart.find((item) => item.id === id);
+  itemUpdate.quantity = Number(newValue);
+  item.quantity = itemUpdate.quantity;
   showTotalPrice();
   showTotalQuantity();
   saveNewDataToCache(item);
@@ -223,20 +216,16 @@ function deleteItem(item) {
 /************* AFFICHAGE TOTAL PRIX *************/
 //Recalcule de la quantité au click dans le panier
 function showTotalPrice() {
+  //On récupère la nouvelle valeur
   let total = 0;
-  if (cart.length > 0) {
-    cart.forEach((item) => {
-      fetch(`http://localhost:3000/api/products/${item.id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          total += data.price * item.quantity;
-          document.querySelector("#totalPrice").textContent = total;
-        })
-        .catch((error) => console.log(error));
-    });
-  } else {
-    document.querySelector("#totalPrice").textContent = "";
-  }
+  const totalPrice = document.querySelector("#totalPrice");
+  cart.forEach((item) => {
+    //Calcul du nouveau prix
+    const totalUnitPrice = item.price * item.quantity;
+    total = total + totalUnitPrice;
+  });
+  //On affiche le prix total
+  totalPrice.textContent = total;
 }
 
 /**********  OK  **********/
@@ -244,11 +233,14 @@ function showTotalPrice() {
 function showTotalQuantity() {
   //On récupère la nouvelle valeur
   let total = 0;
+  const totalQuantity = document.querySelector("#totalQuantity");
   cart.forEach((item) => {
     //Calcul de la nouvelle quantité
-    total += item.quantity;
+    const totalUnitQuantity = item.quantity;
+    total = total + totalUnitQuantity;
   });
-  document.getElementById("totalQuantity").textContent = total;
+  //On affiche la quantoté totale
+  totalQuantity.textContent = total;
 }
 
 //Fonction de suppression de l'article du cart
@@ -282,16 +274,22 @@ function deleteDataFromCache(item) {
 
 //Récupération des éléments des inputs selon leur ID
 //Validation du formulaire et des champs
-function ifFormIsInvalid() {
-  const isValid = false;
+function ifFormIsInvalid(e) {
+  //Récupération du formulaire
   const form = document.querySelector(".cart__order__form");
+  //Sélection de tout les inputs
   const inputs = form.querySelectorAll("input");
+  //Boucle pour tout les inputs
   inputs.forEach((input) => {
+    //Si aucun input n'est rempli
+    //..Message d'erreur
     if (input.value === "") {
-      alert("Veuillez remplir tous les champs");
-      isValid = true;
-    }
-    return isValid;
+      alert("Remplissez tout les champs du formulaire svp");
+      e.preventDefault();
+      //Retourner vrai
+      return true;
+    } //Ou faux
+    return false;
   });
 }
 

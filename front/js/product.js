@@ -20,7 +20,7 @@ function showCanapés(canapé) {
   productName = canapé.name;
   addDivImg(canapé);
   addTitle(canapé);
-  addPrice(canapé); // A LAISSER
+  addPrice(canapé);
   addDescription(canapé);
   addColors(canapé);
 }
