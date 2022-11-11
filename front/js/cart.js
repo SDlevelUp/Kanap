@@ -7,6 +7,21 @@ const cart = [];
 //Récupération des items du cache (stockage)
 retrieveLocalStorage();
 
+//Pour chaque éléments dans le cart on lui fabrique ses "attributs" issue du code HTML
+cart.forEach((item) => {
+  fetch(`http://localhost:3000/api/products/${item.id}`)
+    .then((res) => res.json())
+    .then((data) => {
+      showItem(item, data);
+    })
+    .catch((error) => {
+      alert(
+        "Oops, il semblerait que nous n'ayons pas pu récupérer les données"
+      );
+      console.log(error);
+    });
+});
+
 //Récupération des items issu du LocalStorage
 function retrieveLocalStorage() {
   //Loop pour itérer sur toutes les clés du localStorage et
@@ -19,9 +34,6 @@ function retrieveLocalStorage() {
   }
 }
 
-//Pour chaque éléments dans le cart on lui fabrique ses "attributs" issue du code HTML
-cart.forEach((item) => showItem(item));
-
 // Affichage des articles
 function showArticle(article) {
   document.querySelector("#cart__items").appendChild(article);
@@ -29,7 +41,7 @@ function showArticle(article) {
 
 /*********** OK ***********/
 //Afficher l'objet
-function showItem(item) {
+function showItem(item, data) {
   //On fait un article
   const article = generateArticle(item);
   //Insertion de la div de l'image
@@ -37,7 +49,7 @@ function showItem(item) {
   //Appender la div de l'image à l'article
   article.appendChild(divOfImage);
   // Insertion du content de la description du produit
-  const cardItemContent = generateCartContent(item);
+  const cardItemContent = generateCartContent(item, data);
   article.appendChild(cardItemContent);
 
   //Récupération des fonctions de l'article, prix total + quantité
@@ -96,7 +108,7 @@ function generateCartContent(item, data) {
 
 /********OK*******/
 // Création des spécifités des canapés qui s'afficheront
-function generateDesctiption(item) {
+function generateDesctiption(item, data) {
   //On lui créer sa div
   const description = document.createElement("div");
   description.classList.add("cart__item__content__description");
@@ -111,7 +123,7 @@ function generateDesctiption(item) {
 
   // On lui insert le "paragraphe" du prix
   const paragOfPrice = document.createElement("p");
-  paragOfPrice.textContent = item.price + " €";
+  paragOfPrice.textContent = data.price + " €";
 
   // On appende tout les éléments
   description.appendChild(h2);
@@ -170,7 +182,10 @@ function addQuantitySettings(item) {
 
 //Quand au click on augmente ou diminue la quantité, on récupère la nouvelle valeur
 function changeQuantityAndPrice(id, item, newValue) {
-  const itemUpdate = cart.find((item) => item.id === id);
+  const itemUpdate = cart.find(
+    (product) => product.id === item.id && product.color === item.color
+  );
+
   itemUpdate.quantity = Number(newValue);
   item.quantity = itemUpdate.quantity;
   showTotalPrice();
@@ -218,14 +233,19 @@ function deleteItem(item) {
 function showTotalPrice() {
   //On récupère la nouvelle valeur
   let total = 0;
-  const totalPrice = document.querySelector("#totalPrice");
-  cart.forEach((item) => {
-    //Calcul du nouveau prix
-    const totalUnitPrice = item.price * item.quantity;
-    total = total + totalUnitPrice;
-  });
-  //On affiche le prix total
-  totalPrice.textContent = total;
+  if (cart.length > 0) {
+    cart.forEach((item) => {
+      fetch(`http://localhost:3000/api/products/${item.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          total += data.price * item.quantity;
+          document.querySelector("#totalPrice").textContent = total;
+        })
+        .catch((error) => console.log(error));
+    });
+  } else {
+    document.querySelector("#totalPrice").textContent = "";
+  }
 }
 
 /**********  OK  **********/
@@ -251,6 +271,8 @@ function deleteArticleFromCart(item) {
   );
   //L'article est supprimé du cart
   deleteArticleFromCart.remove();
+  alert("--Article supprimé avec succès--");
+  return;
 }
 
 /*********** OK *************/
