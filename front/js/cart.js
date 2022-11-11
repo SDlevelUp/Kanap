@@ -5,104 +5,119 @@
 const cart = [];
 
 //Récupération des items du cache (stockage)
-retrieveItemsFromCache();
+retrieveLocalStorage();
 
-//Récupération des items issu du cache
-function retrieveItemsFromCache() {
-  //Voir le nombre d'entrée dans le panier
-  const numberOfItems = localStorage.length;
+//Récupération des items issu du LocalStorage
+function retrieveLocalStorage() {
   //Loop pour itérer sur toutes les clés du localStorage et
-  for (let i = 0; i < numberOfItems; i++) {
-    const item = localStorage.getItem(localStorage.key(i)) || ""; //Si item null => rien : ""
+  for (let i = 0; i < localStorage.length; i++) {
+    const item = localStorage.getItem(localStorage.key(i));
     //...on en fait un objet avec JSON.parse
-    const itemObject = JSON.parse(item);
+    const itemArray = JSON.parse(item);
     //..on le push : retourner la nouvelle taille du tableau
-    cart.push(itemObject);
+    cart.push(itemArray);
   }
 }
 
 //Pour chaque éléments dans le cart on lui fabrique ses "attributs" issue du code HTML
-cart.forEach((item) => showItem(item));
+cart.forEach((item) => showCanapé(item));
 
-// Affichage des articles
-function showArticle(article) {
-  document.querySelector("#cart__items").appendChild(article);
-}
-
-//Afficher l'objet
-function showItem(item) {
+/*********** OK ***********/
+//Afficher le panier
+function showCanapé(item, data) {
   //On fait un article
   const article = generateArticle(item);
+
   //Insertion de la div de l'image
-  const divOfImage = generateImageDiv(item);
-  //Appender la div de l'image à l'article
-  article.appendChild(divOfImage);
+  const img = generateImageDiv(item);
+
   // Insertion du content de la description du produit
-  const cardItemContent = generateCartContent(item);
-  article.appendChild(cardItemContent);
+  const content = generateCartContent(item, data);
 
   //Récupération des fonctions de l'article, prix total + quantité
-  showArticle(article);
   showTotalPrice();
   showTotalQuantity();
+
+  //Appender la div de l'image à l'article
+  article.appendChild(img);
+  // Insertion du content de la description du produit
+  article.appendChild(content);
 }
 
+/******OK********/
 // On met en place l'article
 function generateArticle(item) {
+  const cartItems = document.getElementById("cart__items");
   //Utilisation de createElement pour récupérer l'élément 'article'
+
   const article = document.createElement("article");
+
   //Récupération de la class de l'élément
   article.classList.add("card__item");
   //Ajout des attributs à l'élément HTML avec dataset
   article.dataset.id = item.id;
-  article.dataset.color = item.color;
+  article.dataset.colors = item.color;
+
+  cartItems.appendChild(article);
+
   return article;
 }
 
+/*****IMAGE OK*****/
 //Récupération de l'image issue de la div (code HTML)
 function generateImageDiv(item) {
   //Utilisation de createElement pour récupérer l'élément 'div'
-  const div = document.createElement("div");
+  const divImg = document.createElement("div");
   //Récupération de la class de l'élément
-  div.classList.add("cart__item__img");
-  const image = document.createElement("img");
-  //Récupération des attribut altTxt et ImageUrl des produits
-  image.src = item.imageUrl;
-  image.alt = item.altTxt;
-  div.appendChild(image);
+  divImg.classList.add("cart__item__img");
 
-  return div;
+  const img = document.createElement("img");
+
+  //Récupération des attribut altTxt et ImageUrl des produits
+  img.src = item.imageUrl;
+  img.alt = item.altTxt;
+
+  divImg.appendChild(img);
+
+  return divImg;
 }
 
 // Récupération de la div: "cart_content"
-function generateCartContent(item) {
+function generateCartContent(item, data) {
   // Insertion de la div du content
-  const cardItemContent = document.createElement("div");
-  cardItemContent.classList.add("cart__item__content");
-  // On créer les constantes pour les paramètres et de la description
-  const description = generateDesctiption(item);
-  const settings = generateSettingsOfProducts(item);
-  //Appender les éléments description et setting
-  cardItemContent.appendChild(description);
-  cardItemContent.appendChild(settings);
+  const itemContent = document.createElement("div");
+  itemContent.classList.add("cart__item__content");
 
-  return cardItemContent;
+  // On créer les constantes pour les paramètres et de la description
+  const description = generateDesctiption(item, data);
+  const settings = generateSettingsOfProducts(item);
+
+  //Appender les éléments description et setting
+  itemContent.appendChild(description);
+  itemContent.appendChild(settings);
+
+  return itemContent;
 }
 
+/********OK*******/
 // Création des spécifités des canapés qui s'afficheront
 function generateDesctiption(item) {
   //On lui créer sa div
   const description = document.createElement("div");
   description.classList.add("cart__item__content__description");
+
   // On lui insert le titre
   const h2 = document.createElement("h2");
   h2.textContent = item.name;
+
   // On lui insert le paragrahpe
   const p = document.createElement("p");
   p.textContent = item.color;
+
   // On lui insert le "paragraphe" du prix
   const paragOfPrice = document.createElement("p");
   paragOfPrice.textContent = item.price + " €";
+
   // On appende tout les éléments
   description.appendChild(h2);
   description.appendChild(p);
@@ -117,132 +132,143 @@ function generateSettingsOfProducts(item) {
   const settings = document.createElement("div");
   settings.classList.add("cart__item__content__settings");
 
-  addQuantitySettings(settings, item);
-  addDeleteSettings(settings, item);
+  const quantitySettings = addQuantitySettings(item);
+  const deleteSettings = addDeleteSettings(item);
+
+  settings.appendChild(quantitySettings);
+  settings.appendChild(deleteSettings);
 
   return settings;
 }
 
 // Récupération de la quantité
-function addQuantitySettings(settings, item) {
+function addQuantitySettings(item) {
   //Récupération de la div
-  const quantity = document.createElement("div");
-  //Ajout de sa class
-  quantity.classList.add("cart__item__content__settings__quantity");
+  const quantitySettings = document.createElement("div");
+  //Ajout de sa classe
+  quantitySettings.classList.add("cart__item__content__settings__quantity");
+
   //Ajout du p (de la quantité)
-  const p = document.createElement("p");
-  //Ajout du terme
-  p.textContent = " Qté : ";
-  quantity.appendChild(p);
+  const quantity = document.createElement("quantity");
+  quantity.textContent = " Qté : ";
+
   // Insertion de l'élément "input"
   const input = document.createElement("input");
+
   //Ajout des spécifités relatives à l'input(type, name, value, min, max ...)
-  input.classList.add("itemQuantity");
   input.type = "number";
+  input.classList.add("itemQuantity");
   input.name = "itemQuantity";
   input.min = "1";
   input.max = "100";
   input.value = item.quantity;
-
   //Ecouter au click l'ajustement prix / quantité dans le panier
-  input.addEventListener("input", () =>
-    changeQuantityAndPrice(item.id, input.value, item)
+  input.addEventListener("change", () =>
+    changeQuantityAndPrice(item.id, item, input.value)
   );
-  quantity.appendChild(input);
-  settings.appendChild(quantity);
+
+  quantitySettings.appendChild(quantity);
+  quantitySettings.appendChild(input);
+
+  return quantitySettings;
 }
 
 //Quand au click on augmente ou diminue la quantité, on récupère la nouvelle valeur
-function changeQuantityAndPrice(id, newValue, item) {
-  //A chaque click de l'update de la quantité, l'id dont la quantité change s'affiche
-  const itemUpdate = cart.find((item) => item.id === id);
-  //Updater la quantité
-  itemUpdate.quantity = Number(newValue);
-  item.quantity = itemUpdate.quantity;
-  //Appeler les fonctions qui vont recalculer le total : quantity and price
+function changePriceAndQuantity(item, newValue) {
+  const itemToChange = cart.find(
+    (product) => product.id === item.id && product.color === item.color
+  );
+  itemToChange.quantity = Number(newValue);
+  item.quantity = itemToChange.quantity;
   showTotalPrice();
   showTotalQuantity();
   saveNewDataToCache(item);
 }
 
+/******OK******/
 //Suppression de l'article au click
-function addDeleteSettings(settings, item) {
-  //Récupération de la div de suppression d'un produit
-  const div = document.createElement("div");
-  div.classList.add("cart__item__content__settings__delete");
+function addDeleteSettings(item) {
+  const deleteDiv = document.createElement("div");
+
+  deleteDiv.classList.add("cart__item__content__settings__delete");
+
+  const div = document.createElement("p");
+  div.classList.add("deleteItem");
+  div.textContent = "Supprimer";
   div.addEventListener("click", () => deleteItem(item));
 
-  //Création de la constante pour afficher le mot "Supprimer"
-  const p = document.createElement("p");
-  p.textContent = "Suprimer";
-  div.appendChild(p);
-  settings.appendChild(div);
+  deleteDiv.appendChild(div);
+
+  return deleteDiv;
 }
 
 //Suppression de l'article selectionné du cache et de la page cart
 function deleteItem(item) {
-  //Donner un index quant au produit qui est sélectionné
-  const itemToDelete = cart.findIndex(
+  const itemToDelete = cart.find(
     //Filtre sur deux champs différents : la couleur et l'id
     //...ils doivent correspondre à l'élément supprimer
     (product) => product.id === item.id && product.color === item.color
   );
   //Supprimer un élément avec splice
-  cart.splice(itemToDelete, 1);
+  cart.splice(cart.indexOf(itemToDelete), 1);
+
   //On affiche : la nouvelle quantité, prix
-  showTotalQuantity();
   showTotalPrice();
+  showTotalQuantity();
   //Le data et l'article sont supprimé du cache et du cart
   deleteDataFromCache(item);
   deleteArticleFromCart(item);
 }
 
+/************* AFFICHAGE TOTAL PRIX *************/
 //Recalcule de la quantité au click dans le panier
 function showTotalPrice() {
-  //On récupère la nouvelle valeur
   let total = 0;
-  const totalPrice = document.querySelector("#totalPrice");
-  cart.forEach((item) => {
-    //Calcul du nouveau prix
-    const totalUnitPrice = item.price * item.quantity;
-    total = total + totalUnitPrice;
-  });
-  //On affiche le prix total
-  totalPrice.textContent = total;
+  if (cart.length > 0) {
+    cart.forEach((item) => {
+      fetch(`http://localhost:3000/api/products/${item.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          total += data.price * item.quantity;
+          document.querySelector("#totalPrice").textContent = total;
+        })
+        .catch((error) => console.log(error));
+    });
+  } else {
+    document.querySelector("#totalPrice").textContent = "";
+  }
 }
 
+/**********  OK  **********/
 //Recalcule de la quantité au click dans le panier
 function showTotalQuantity() {
   //On récupère la nouvelle valeur
   let total = 0;
-  const totalQuantity = document.querySelector("#totalQuantity");
   cart.forEach((item) => {
     //Calcul de la nouvelle quantité
-    const totalUnitQuantity = item.quantity;
-    total = total + totalUnitQuantity;
+    total += item.quantity;
   });
-  //On affiche la quantoté totale
-  totalQuantity.textContent = total;
+  document.getElementById("totalQuantity").textContent = total;
 }
 
 //Fonction de suppression de l'article du cart
 function deleteArticleFromCart(item) {
   const deleteArticleFromCart = document.querySelector(
     //Suppression de l'article qui a l'id
-    `article[data-id="${item.id}"][data-color="${item.color}"]`
+    `[data-id="${item.id}"][data-color="${item.color}"]`
   );
   //L'article est supprimé du cart
   deleteArticleFromCart.remove();
-  alert("L'article sera supprimer de votre panier");
 }
 
-//Fonction d'enregistrement des nouvelles valeurs updater : (prix, quantité, canapés, ...)
+/*********** OK *************/
+//Enregistrement des nouvelles valeurs updater : (prix, quantité, canapés, ...)
 function saveNewDataToCache(item) {
   const saveData = JSON.stringify(item);
   //On change la clé de base avec la vraie valeur du produit dans le panier (Callycé noir + Callycé blanc, ...)
-  const key = `${item.id}-${item.color}`;
+  const saveKey = `${item.id}-${item.color}`;
   //Ajouter la clé dans le LS
-  localStorage.setItem(key, saveData); //saveData : sauvegarde de la nouvelle valeur
+  localStorage.setItem(saveKey, saveData); //saveData : sauvegarde de la nouvelle valeur
 }
 
 //Fonction pour suppression du produit dans le localStorage également
@@ -253,7 +279,22 @@ function deleteDataFromCache(item) {
 }
 
 /********************** FORMULAIRE **********************/
+
 //Récupération des éléments des inputs selon leur ID
+//Validation du formulaire et des champs
+function ifFormIsInvalid() {
+  const isValid = false;
+  const form = document.querySelector(".cart__order__form");
+  const inputs = form.querySelectorAll("input");
+  inputs.forEach((input) => {
+    if (input.value === "") {
+      alert("Veuillez remplir tous les champs");
+      isValid = true;
+    }
+    return isValid;
+  });
+}
+
 const firstName = document.getElementById("firstName");
 const lastName = document.getElementById("lastName");
 const address = document.getElementById("address");
@@ -349,13 +390,18 @@ email.addEventListener("input", (e) => {
   }
 });
 
+/********************COMMANDER********************/
+
+const orderButton = document.querySelector("#order");
+orderButton.addEventListener("click", (e) => submitForm(e));
+
 //Soumettre le formulaire
 function submitForm(e) {
   //Évènement qui permet de ne pas rafraichir
   e.preventDefault();
   if (cart.length === 0) {
     //Message d'erreur si le client va directement au panier sans rien ajouter à son panier
-    alert("Ajoutez de magnifiques canapés à votre panier !");
+    alert("Votre panier est vide");
     return;
   }
 
@@ -363,71 +409,47 @@ function submitForm(e) {
   if (ifFormIsInvalid()) return;
 
   const body = addRequestBody();
-  //Récupération de l'API order
   fetch("http://localhost:3000/api/products/order", {
     method: "POST",
-    //Convertir une valeur JavaScript en chaîne JSON
-    body: JSON.stringify(body),
     headers: {
-      Accept: "application/json",
       "Content-Type": "application/json",
+      Accept: "application/json",
     },
+    body: JSON.stringify(body),
   })
     .then((res) => res.json())
     .then((data) => {
       const orderId = data.orderId;
-      //la fenêtre de redirection doit afficher le numéro de commande : orderId
-      window.location.href =
-        "/front/html/confirmation.html" + "?orderId=" + orderId;
+      window.location.href = "confirmation.html" + "?orderId=" + orderId;
     })
-    //Si il y a une erreur, affichage dans la console
-    .catch((err) => console.error(err));
-}
-
-/********************COMMANDER********************/
-//Boutton "Commander"
-const orderButton = document.querySelector("#order");
-orderButton.addEventListener("click", (e) => submitForm(e));
-
-//Validation du formulaire et des champs
-function ifFormIsInvalid(e) {
-  //Récupération du formulaire
-  const form = document.querySelector(".cart__order__form");
-  //Sélection de tout les inputs
-  const inputs = form.querySelectorAll("input");
-  //Boucle pour tout les inputs
-  inputs.forEach((input) => {
-    //Si aucun input n'est rempli
-    //..Message d'erreur
-    if (input.value === "") {
-      alert("Remplissez tout les champs du formulaire svp");
-      e.preventDefault();
-      //Retourner vrai
-      return true;
-    } //Ou faux
-    return false;
-  });
+    .catch((error) => console.error(error));
 }
 
 //On envoie une requette au body
 function addRequestBody() {
   //On rappelle le formulaire
   const form = document.querySelector(".cart__order__form");
+  const firstName = form.elements.firstName.value;
+  const lastName = form.elements.lastName.value;
+  const address = form.elements.address.value;
+  const city = form.elements.city.value;
+  const email = form.elements.email.value;
+
   const body = {
     contact: {
-      firstName: form.elements.firstName.value,
-      lastName: form.elements.lastName.value,
-      address: form.elements.address.value,
-      city: form.elements.city.value,
-      email: form.elements.email.value,
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email,
     },
-    products: retrieveIdsFromCache(),
+    products: retrieveIdsFromLocalStorage(),
   };
   return body;
 }
 
 //On récupère les ids du cache
-function retrieveIdsFromCache() {
+function retrieveIdsFromLocalStorage() {
   //Affichage du nombre de produits dans le localStorage
   const numberOfProducts = localStorage.length;
   //Récupération + affichage ids dans un tableau

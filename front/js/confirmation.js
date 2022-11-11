@@ -1,7 +1,21 @@
 /*********************************** PARTIE CONFIRMATION + NUMERO DE COMMANDE *************************************/
+const orderId = retrieveOrderId();
+showOrderId(orderId);
+clearLocalStorage();
 
-//Redirection vers la page du numéro de commande
-let orderId = new URL(window.location.href).searchParams.get("orderId");
+// Récupération de l'id de la commande
+function retrieveOrderId() {
+  const urlQueryString = window.location.search;
+  const urlParams = new URLSearchParams(urlQueryString);
+  return urlParams.get("orderId");
+}
+// Affichage de l'id de la commande
+function showOrderId(orderId) {
+  const orderIdElement = document.querySelector("#orderId");
+  orderIdElement.textContent = orderId;
+}
 
-let orderIdNumber = document.querySelector("#orderId");
-orderIdNumber.textContent = orderId;
+// Suppression du localStorage après la confirmation de la commande
+function clearLocalStorage() {
+  localStorage.clear();
+}
