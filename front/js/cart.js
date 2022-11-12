@@ -340,6 +340,7 @@ firstName.addEventListener("input", function (e) {
   } else if (e.target.value.length < 3 || e.target.value.length > 25) {
     errorFirstName.innerText =
       " Le champ doit contenir entre 3 et 25 caractères ";
+    errorFirstName.style.color = "black";
     valueFirstName = null;
   }
   if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)) {
@@ -356,6 +357,7 @@ lastName.addEventListener("input", function (e) {
   } else if (e.target.value.length < 3 || e.target.value.length > 25) {
     errorLastName.innerText =
       " Le champ doit contenir entre 3 et 25 caractères ";
+    errorFirstName.style.color = "black";
     valueLastName = null;
   }
   if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)) {
@@ -371,6 +373,7 @@ address.addEventListener("input", function (e) {
     valueAddress = null;
   } else if (e.target.value.length < 3 || e.target.value.length > 35) {
     errorAddress.innerText = " Le champ doit commencer par un chiffre ";
+    errorFirstName.style.color = "black";
     valueAddress = null;
   }
   if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)) {
@@ -386,6 +389,7 @@ city.addEventListener("input", function (e) {
     valueCity = null;
   } else if (e.target.value.length < 3 || e.target.value.length > 25) {
     errorCity.innerText = " Le champ doit contenir entre 3 et 25 caractères ";
+    errorFirstName.style.color = "black";
     valueCity = null;
   }
   if (e.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)) {
