@@ -173,7 +173,7 @@ function addQuantitySettings(item) {
   input.addEventListener("change", () =>
     changeQuantityAndPrice(item.id, item, input.value)
   );
-
+  //Append l'enfant au parent
   quantitySettings.appendChild(quantity);
   quantitySettings.appendChild(input);
 
@@ -192,7 +192,6 @@ function changeQuantityAndPrice(id, item, newValue) {
   item.quantity = itemUpdate.quantity;
   showTotalPrice();
   showTotalQuantity();
-  saveNewDataToCache(item);
 }
 
 /****** PARAMETRES DE SUPPRESSION DE L'ARTICLE ******/
@@ -228,7 +227,6 @@ function deleteItem(item) {
   showTotalPrice();
   showTotalQuantity();
   //Le data et l'article sont supprimé du cache et du cart
-  deleteDataFromCache(item);
   deleteArticleFromCart(item);
 }
 
@@ -253,19 +251,12 @@ function showTotalPrice() {
         // On récupère les résultats de la première promesse dans une autre promesse 
         //...qui permet de traiter les datas dans notre page web
         .then((data) => {
-
           //  Calcul du total du prix
           total += data.price * item.quantity;
           // 4. Récupération de l'id "totalPrice", et l'afficher avec textContent
           document.getElementById('totalPrice').textContent = total;
         })
-        // GESTION DES ERREURS SI L'APPEL AU "PREMIER .then" NE FONCTIONNE PAS
-        .catch((error) => console.log(error  + "Impossible de récupérer cette information"));
     });
-    // SINON
-  } else {
-    //Si un des appels de fonction asynchrone échoue => vide
-    document.getElementById("totalPrice").textContent = "";
   }
 }
 
@@ -301,28 +292,6 @@ function deleteArticleFromCart(item) {
   alert("--Article supprimé avec succès--");
   //Fin de l'éxecution de la fonction
   return;
-}
-
-/************* ENREGISTREMENT DES NOUVELLES VALEURS UPDATER *************/
-
-//Fonction d'enregistrer dans le cache la réponse du serveur pendant un certain temps
-function saveNewDataToCache(item) {
-  // Constante d'enregistrement
-  const saveData = JSON.stringify(item); //JSON.stringify : convertit une valeur JavaScript en chaîne de caractère JSON ex : {"name"}
-  //On change la clé de base avec la vraie valeur du produit dans le panier (Callycé noir + Callycé blanc, ...)
-  const saveKey = `${item.id}-${item.color}`;
-  //Ajouter et sauvegarder "un temps" la clé (key) dans le LS
-  localStorage.setItem(saveKey, saveData); //saveData : sauvegarde de la nouvelle valeur
-}
-
-/************* SUPPRESSION DU DATA DU CACHE *************/
-
-//Fonction pour supprimer au "delete" : le produit que l'utilisateur ne veut plus garder dans son panier
-function deleteDataFromCache(item) {
-  //On récupére l'itemId et l'itemColor des canapés
-  const key = `${item.id}-${item.color}`;
-  //Suppression du LS
-  localStorage.removeItem(key);
 }
 
 /********************** FORMULAIRE **********************/
@@ -413,7 +382,6 @@ lastName.addEventListener("input", function (e) {
   }
 });
 
-
 /************ PARTIE ADDRESS ************/
 
 address.addEventListener("input", function (e) {
@@ -452,7 +420,6 @@ city.addEventListener("input", function (e) {
   }
 });
 
-
 /************ PARTIE EMAIL ************/
 email.addEventListener("input", (e) => {
   //Appel des variables pour mieux manipuler les conditions
@@ -489,9 +456,7 @@ function submitForm(e) {
   if (ifFormIsInvalid()) return;
 
 /****************** REQUETE POST ******************/
-
   const body = addRequestBody();
-
   //URL DE NOTRE API ORDER
   fetch("http://localhost:3000/api/products/order", {
     // REQUETE POST : ENVOI DES DONNEES DU FORMULAIRE AU SITE WEB
@@ -509,17 +474,14 @@ function submitForm(e) {
   // .then : récupère une promesse
   //... qui va nous donner des données, et du coup  (une réponse : ((res))
     .then((res) => res.json())
-    // Traiter les datas dans notre page web
+    // Traiter les datas de notre page web
     .then((data) => {
       //Dernière promesse pour la redirection si tt est ok, vers la page qui contient le numéro de commande
       //CONSTANTE DE L'orderId (id de commande)
       const orderId = data.orderId;
       window.location.href = "confirmation.html" + "?orderId=" + orderId;
     })
-    //SINON ERREUR
-    .catch((error) => console.error(error));
 }
-
 
 //FONCTION DE LA REQUETE DU BODY POUR QUE L'API RECUPERE SOUS FORME DE STRING LES INFOS DU FORMULAIRE
 function addRequestBody() {
