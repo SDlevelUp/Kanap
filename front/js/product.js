@@ -9,12 +9,13 @@ fetch("http://localhost:3000/api/products/" + productId)
   // Dès que la page est chargé, tout est récupérer
   //La méthode .then() est une fonction qui renvoie un objet, avec la Promise
   .then((res) => res.json())
+  //Affichage des produits via la fonction "showCanapés"
   .then((canapés) => showCanapés(canapés));
 
 // Création de la fonction globale pour ajouter les canapés sur la page produit
 function showCanapés(canapé) {
   // Récupérer des éléments du produit
-  //On réassigne les variable, let itemPrice, etc
+  // AFFICHAGE DES ELEMENTS DES CANAPES (NOM, PRIX, DES.)
   imgUrl = canapé.imageUrl;
   altText = canapé.altTxt;
   productName = canapé.name;
@@ -25,6 +26,7 @@ function showCanapés(canapé) {
   addColors(canapé);
 }
 
+/*********** AFFICHAGE DE L'IMAGE ***********/
 // Création de la fonction pour ajouter l'image des canapés
 function addDivImg(canapé) {
   const divImg = document.querySelector(".item__img");
@@ -36,6 +38,8 @@ function addDivImg(canapé) {
   return divImg;
 }
 
+
+/*********** AJOUT NOM DU PRODUIT ***********/
 // Création de la fonction pour ajouter le nom des canapés
 function addTitle(canapé) {
   // Constante pour afficher le titre du canapé
@@ -45,6 +49,8 @@ function addTitle(canapé) {
   return h1;
 }
 
+
+/*********** AJOUT PRIX DU PRODUIT ***********/
 // Ajouter le prix des canapés
 function addPrice(canapé) {
   // Constante pour afficher le prix du canapé
@@ -54,6 +60,7 @@ function addPrice(canapé) {
   return price;
 }
 
+/*********** AJOUT DESCRIPTION DU PRODUIT ***********/
 // Ajouter la description des canapés
 function addDescription(canapé) {
   // Constante pour afficher la description du canapé
@@ -63,6 +70,7 @@ function addDescription(canapé) {
   return p;
 }
 
+/*********** AJOUT COULEUR DU PRODUIT ***********/
 // Ajouter la couleur du canapé commandé
 function addColors(canapé) {
   // Constante pour afficher la couleur du canapé
@@ -78,7 +86,7 @@ function addColors(canapé) {
 
 /**********************ADD TO CART******************** */
 
-// Constante qui va lire les des données et les envoyées vers la page panier
+// Constante qui va lire les des données et les envoyées vers la page panier au click
 const button = document.querySelector("#addToCart");
 button.addEventListener("click", clickToOrder);
 
@@ -101,8 +109,12 @@ function orderNotValid(color, quantity) {
   // window.location.href = "cart.html";
 }
 
+/*********** AJOUTER AU CART LES ELEMENTS DU PRODUIT ***********/
+
+//Quand le client est sur la partie "COMMANDE"
+// Infos du canapés s'affiche
 function addToCard(color, quantity) {
-  const key = `${productId}-${color}`;
+  const id = `${productId}-${color}`;
   const value = {
     id: productId,
     color: color,
@@ -111,11 +123,11 @@ function addToCard(color, quantity) {
     altTxt: altText,
     name: productName,
   };
-  if (localStorage.getItem(key) == null) {
-    localStorage.setItem(key, JSON.stringify(value));
+  if (localStorage.getItem(id) == null) {
+    localStorage.setItem(id, JSON.stringify(value));
   } else {
-    const oldQuantity = JSON.parse(localStorage.getItem(key));
+    const oldQuantity = JSON.parse(localStorage.getItem(id));
     oldQuantity.quantity += Number(quantity);
-    localStorage.setItem(key, JSON.stringify(oldQuantity));
+    localStorage.setItem(id, JSON.stringify(oldQuantity));
   }
 }

@@ -1,17 +1,25 @@
 /*********************************** PARTIE PAGE D'ACCEUIL (SCRIPT) *************************************/
 
-// Utilisation de la méthode fetch qui permet de récupérer les données
-fetch("http://localhost:3000/api/products")
+/******** FETCH ********/ 
+// Permet de faire du JS de façon asynchrone : demande de recherche de donnée
+// URL DE NOTRE API
+fetch("http://localhost:3000/api/products") // URL que l'on va "contacter" pour récupérer les données
+// .then : récupère une promesse, qui va nous donner des données, (une réponse : ((res) )
   .then((res) => {
+    // Traiter et récupérer les données en JSON
     return res.json();
   })
-  .then((data) => {
+  // On récupère les résultats de la première promesse dans une autre promesse 
+  //...qui permet de traiter les datas dans notre page web
+  .then((data) => { //Données récupérées sous forme de tableau
+    // console.log(data) : 
+    //Récupération des produits issus de ma fonction "addProducts"
     return addProducts(data);
   });
 
 // Fonction pour récupérer les produits
 function addProducts(canapés) {
-  // Création d'une boucle pour récupérer chaque élément du tableau
+  // Création d'une boucle pour traiter et récupérer les éléments de l'array 
   canapés.forEach((canapés) => {
     // Création d'une constante pour tout regrouper en une seule ligne
     const { _id, imageUrl, altTxt, name, description } = canapés;
