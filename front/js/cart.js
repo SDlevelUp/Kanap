@@ -113,7 +113,7 @@ function generateDescription(item, data) {
 
   // On lui insert le titre
   const h2 = document.createElement("h2");
-  h2textContent = item.name;
+  h2.textContent = item.name;
 
   // On lui insert le paragrahpe
   const p = document.createElement("p");
@@ -257,7 +257,7 @@ function showTotalPrice() {
           //  Calcul du total du prix
           total += data.price * item.quantity;
           // 4. Récupération de l'id "totalPrice", et l'afficher avec textContent
-          document.getElementById("totalPrice").textContent = total;
+          document.getElementById('totalPrice').textContent = total;
         })
         // GESTION DES ERREURS SI L'APPEL AU "PREMIER .then" NE FONCTIONNE PAS
         .catch((error) => console.log(error  + "Impossible de récupérer cette information"));
