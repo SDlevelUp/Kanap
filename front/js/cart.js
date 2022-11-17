@@ -271,9 +271,9 @@ function showTotalPrice() {
 
 /************* RECALCUL DE LA QUANTITE *************/
 
-//   Fonction d'affichage de la quantité totale
+//Fonction d'affichage de la quantité totale
 function showTotalQuantity() {
-  //2 On récupère la nouvelle valeur
+  // On récupère la nouvelle valeur
   let total = 0;
   const totalQuantity = document.querySelector("#totalQuantity");
   // Permet de parcourir des tableaux ou des collections 
@@ -283,16 +283,16 @@ function showTotalQuantity() {
     const totalUnitQuantity = item.quantity;
     total += totalUnitQuantity;
   });
-  //4. On affiche la quantoté totale
+  //On affiche la quantoté totale
   totalQuantity.textContent = total;
 }
 
 /************* SUPPRESSION DE L'ARTICLE DU CART *************/
 
-//  Fonction de suppression de l'article du cart
+//Fonction de suppression de l'article du cart
 function deleteArticleFromCart(item) {
   const deleteArticleFromCart = document.querySelector(
-    //2 Suppression de l'article qui a l'id et la couleur qu'il faut
+    //Suppression de l'article qui a l'id et la couleur qu'il faut
     `[data-id="${item.id}"][data-color="${item.color}"]`
   );
   // L'article est supprimé du cart
