@@ -435,6 +435,7 @@ email.addEventListener("input", (e) => {
     errorEmail.innerText =
       " Le champ saisi est incorrect, il doit être de type : pierredupont@hotmail.fr";
     valueEmail = null;
+    valueEmail = e.target.value;
   }
 });
 
