@@ -266,7 +266,7 @@ function showTotalPrice() {
 
 //Fonction d'affichage de la quantité totale
 function showTotalQuantity() {
-  // On récupère la nouvelle valeur
+  // On récupère la quantité
   let total = 0;
   const totalQuantity = document.getElementById("totalQuantity");
   // Permet de parcourir des tableaux ou des collections 
@@ -276,7 +276,7 @@ function showTotalQuantity() {
     const totalUnitQuantity = item.quantity;
     total += totalUnitQuantity;
   });
-  //On affiche la quantoté totale
+  //On affiche la quantité totale
   totalQuantity.textContent = total;
 }
 
