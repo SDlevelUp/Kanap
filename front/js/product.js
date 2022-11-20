@@ -3,19 +3,19 @@
 //Redirection de l'URL des canapés vers la page panier
 let productId = new URL(window.location.href).searchParams.get("id");
 
-// Utilisation de la méthode fetch qui permet d'exécuter des requêtes HTTP sans avoir besoin de recharger la page du navigateur
-//...et afficher les produits
+/******** FETCH ********/ 
+// Permet de faire du JS de façon asynchrone : demande de recherche de donnée
+// URL DE NOTRE API
 fetch("http://localhost:3000/api/products/" + productId)
-  // Dès que la page est chargé, tout est récupérer
-  //La méthode .then() est une fonction qui renvoie un objet, avec la Promise
+  // .then : récupère une promesse, qui va nous donner des données, (une réponse : ((res))
   .then((res) => res.json())
-  //Affichage des produits via la fonction "showCanapés"
+  //Affichage et récupération des produits via la fonction "showCanapés"
   .then((canapés) => showCanapés(canapés));
 
 // Création de la fonction globale pour ajouter les canapés sur la page produit
 function showCanapés(canapé) {
   // Récupérer des éléments du produit
-  // AFFICHAGE DES ELEMENTS DES CANAPES (NOM, PRIX, DES.)
+  // AFFICHAGE DES ATTRIBUTS DES CANAPES (IMAGE, NOM DU PRODUIT, PRIX, DESCRIPTION, IMAGE, ETC)
   imgUrl = canapé.imageUrl;
   altText = canapé.altTxt;
   productName = canapé.name;
@@ -87,12 +87,12 @@ function addColors(canapé) {
 /**********************ADD TO CART******************** */
 
 // Constante qui va lire les des données et les envoyées vers la page panier au click
-const button = document.querySelector("#addToCart");
+const button = document.getElementById("addToCart");
 button.addEventListener("click", clickToOrder);
 
 function clickToOrder() {
-  const color = document.querySelector("#colors").value;
-  const quantity = document.querySelector("#quantity").value;
+  const color = document.getElementById("colors").value;
+  const quantity = document.getElementById("quantity").value;
   //Si c'est invalide : message d'erreur
   if (orderNotValid(color, quantity)) return;
   addToCard(color, quantity);
@@ -106,7 +106,6 @@ function orderNotValid(color, quantity) {
     alert("Choisissez une quantité entre 1 et 100, et une couleur");
     return true;
   }
-  // window.location.href = "cart.html";
 }
 
 /*********** AJOUTER AU CART LES ELEMENTS DU PRODUIT ***********/
@@ -123,11 +122,17 @@ function addToCard(color, quantity) {
     altTxt: altText,
     name: productName,
   };
+  //Conditions d'ajout de la nouvelle quantité lorsque l'utilisateur...
+  //...choisi un autre canapé (couleur identique au précédent)
   if (localStorage.getItem(id) == null) {
     localStorage.setItem(id, JSON.stringify(value));
   } else {
+    //L'ancienne quantité est stringifiée et stocker dans le localStorage
     const oldQuantity = JSON.parse(localStorage.getItem(id));
+    //ENSUITE..
+    //...On calcule a nouvelle quantité en l'ajoutant à l'ancienne (oldQuantity)
     oldQuantity.quantity += Number(quantity);
+    //Et on la re-stringfiy et on la stock dans le localStorage
     localStorage.setItem(id, JSON.stringify(oldQuantity));
   }
 }

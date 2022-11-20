@@ -9,10 +9,13 @@ retrieveLocalStorage();
 
 //Affichage des produits sur la page d'acceuil
 cart.forEach((item) => {
-  //Promess fetch pour récupérer l'API contenant les produits
+  /// Permet de faire du JS de façon asynchrone : demande de recherche de donnée
+// URL de l'API appelé, on lui passe aussi la variable de récupération de l'item.id (le canapé)
   fetch(`http://localhost:3000/api/products/${item.id}`)
+  // .then : récupère une promesse, qui va nous donner des données, (une réponse : ((res))
     .then((res) => res.json())
     .then((data) => {
+      //Affichage et récupération des produits via la fonction "showItem" + les arguments Item et id
       showItem(item, data);
     });
 });
@@ -220,22 +223,22 @@ function deleteItem(item) {
     //...ils doivent correspondre à l'élément supprimer
     (product) => product.id === item.id && product.color === item.color
   );
-  //Supprimer un élément avec splice
+  //Supprimer un élément avec splice (modifie le contenu d'un tableau en retirant des éléments 
+  //..(et/ou en ajoutant de nouveaux éléments))
   cart.splice(cart.indexOf(itemToDelete), 1);
 
   //On affiche : la nouvelle quantité, prix
   showTotalPrice();
   showTotalQuantity();
-  //Le data et l'article sont supprimé du cache et du cart
+  //Rappel fonction : 'L'article est supprmimé du cart'
   deleteArticleFromCart(item);
 }
 
 /************* AFFICHAGE TOTAL PRIX *************/
 
 //Recalcule de la quantité au click dans le panier
-// Fonction
+// Fonction : 'On affiche le prix pour chaque produit'
 function showTotalPrice() {
-  //2 On affiche le prix pour chaque produit
   let total = 0;
   // SI dans notre page cart il y a potentiellement un article 
   // => Le cart est supérieur à zéro
@@ -248,12 +251,11 @@ function showTotalPrice() {
       fetch(`http://localhost:3000/api/products/${item.id}`) 
       // .then : récupère une promesse, qui va nous donner des données, (une réponse : ((res) )
         .then((res) => res.json())
-        // On récupère les résultats de la première promesse dans une autre promesse 
-        //...qui permet de traiter les datas dans notre page web
+        // On récupère les résultats de la première promesse dans une autre promesse qui permet de traiter les datas dans notre page web
         .then((data) => {
           //  Calcul du total du prix
           total += data.price * item.quantity;
-          // 4. Récupération de l'id "totalPrice", et l'afficher avec textContent
+          // Récupération de l'id "totalPrice", et l'afficher avec textContent
           document.getElementById('totalPrice').textContent = total;
         })
     });
@@ -266,7 +268,7 @@ function showTotalPrice() {
 function showTotalQuantity() {
   // On récupère la nouvelle valeur
   let total = 0;
-  const totalQuantity = document.querySelector("#totalQuantity");
+  const totalQuantity = document.getElementById("totalQuantity");
   // Permet de parcourir des tableaux ou des collections 
      //...pour en manipuler tous les éléments
   cart.forEach((item) => {
