@@ -232,6 +232,8 @@ function deleteItem(item) {
   showTotalQuantity();
   //Rappel fonction : 'L'article est supprmimé du cart'
   deleteArticleFromCart(item);
+  deleteDataFromLS(item);
+
 }
 
 /************* AFFICHAGE TOTAL PRIX *************/
@@ -294,6 +296,16 @@ function deleteArticleFromCart(item) {
   alert("--Article supprimé avec succès--");
   //Fin de l'éxecution de la fonction
   return;
+}
+
+/************* SUPPRESSION DU DATA DU CACHE *************/
+
+//Fonction pour supprimer au "delete" : le produit que l'utilisateur ne veut plus garder dans son panier
+function deleteDataFromLS(item) {
+  //On récupére l'itemId et l'itemColor des canapés
+  const key = `${item.id}-${item.color}`;
+  //Suppression du LS
+  localStorage.removeItem(key);
 }
 
 /********************** FORMULAIRE **********************/
