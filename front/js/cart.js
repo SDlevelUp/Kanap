@@ -232,6 +232,7 @@ function deleteItem(item) {
   showTotalQuantity();
   //Rappel fonction : 'L'article est supprmimé du cart'
   deleteArticleFromCart(item);
+  //Rappel fonction : 'L'article est supprimé du LS au click btn "Supprimer"
   deleteDataFromLS(item);
 
 }
@@ -298,7 +299,7 @@ function deleteArticleFromCart(item) {
   return;
 }
 
-/************* SUPPRESSION DU DATA DU CACHE *************/
+/************* SUPPRESSION CANAPE DU LS SUITE AU CLICK *************/
 
 //Fonction pour supprimer au "delete" : le produit que l'utilisateur ne veut plus garder dans son panier
 function deleteDataFromLS(item) {
