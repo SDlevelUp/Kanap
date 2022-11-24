@@ -18,11 +18,11 @@ fetch("http://localhost:3000/api/products") // URL que l'on va "contacter" pour 
   });
 
 // Fonction pour récupérer les produits
-function addProducts(canapés) {
+function addProducts(sofa) {
   // Création d'une boucle pour traiter et récupérer les éléments de l'array 
-  canapés.forEach((canapés) => {
+  sofa.forEach((sofa) => {
     // Création d'une constante pour tout regrouper en une seule ligne
-    const { _id, imageUrl, altTxt, name, description } = canapés;
+    const { _id, imageUrl, altTxt, name, description } = sofa;
     //Mise en place du lien des différents produits avec leur attributs : lien, nom, description
     const anchor = addAnchor(_id);
     const article = document.createElement("article");

@@ -9,30 +9,30 @@ let productId = new URL(window.location.href).searchParams.get("id");
 fetch("http://localhost:3000/api/products/" + productId)
   // .then : récupère une promesse, qui va nous donner des données, (une réponse : ((res))
   .then((res) => res.json())
-  //Affichage et récupération des produits via la fonction "showCanapés"
-  .then((canapés) => showCanapés(canapés));
+  //Affichage et récupération des produits via la fonction "showSofa"
+  .then((sofa) => showSofa(sofa));
 
 // Création de la fonction globale pour ajouter les canapés sur la page produit
-function showCanapés(canapé) {
+function showSofa(sofa) {
   // Récupérer des éléments du produit
   // AFFICHAGE DES ATTRIBUTS DES CANAPES (IMAGE, NOM DU PRODUIT, PRIX, DESCRIPTION, IMAGE, ETC)
-  imgUrl = canapé.imageUrl;
-  altText = canapé.altTxt;
-  productName = canapé.name;
-  addDivImg(canapé);
-  addTitle(canapé);
-  addPrice(canapé);
-  addDescription(canapé);
-  addColors(canapé);
+  imgUrl = sofa.imageUrl;
+  altText = sofa.altTxt;
+  productName = sofa.name;
+  addDivImg(sofa);
+  addTitle(sofa);
+  addPrice(sofa);
+  addDescription(sofa);
+  addColors(sofa);
 }
 
 /*********** AFFICHAGE DE L'IMAGE ***********/
 // Création de la fonction pour ajouter l'image des canapés
-function addDivImg(canapé) {
+function addDivImg(sofa) {
   const divImg = document.querySelector(".item__img");
   const img = document.createElement("img");
-  img.src = canapé.imageUrl;
-  img.alt = canapé.altTxt;
+  img.src = sofa.imageUrl;
+  img.alt = sofa.altTxt;
   divImg.appendChild(img);
 
   return divImg;
@@ -41,10 +41,10 @@ function addDivImg(canapé) {
 
 /*********** AJOUT NOM DU PRODUIT ***********/
 // Création de la fonction pour ajouter le nom des canapés
-function addTitle(canapé) {
-  // Constante pour afficher le titre du canapé
+function addTitle(sofa) {
+  // Constante pour afficher le titre du sofa
   const h1 = document.getElementById("title");
-  h1.textContent = canapé.name;
+  h1.textContent = sofa.name;
 
   return h1;
 }
@@ -52,31 +52,31 @@ function addTitle(canapé) {
 
 /*********** AJOUT PRIX DU PRODUIT ***********/
 // Ajouter le prix des canapés
-function addPrice(canapé) {
+function addPrice(sofa) {
   // Constante pour afficher le prix du canapé
   const price = document.getElementById("price");
-  price.textContent = canapé.price;
+  price.textContent = sofa.price;
 
   return price;
 }
 
 /*********** AJOUT DESCRIPTION DU PRODUIT ***********/
 // Ajouter la description des canapés
-function addDescription(canapé) {
+function addDescription(sofa) {
   // Constante pour afficher la description du canapé
   const p = document.getElementById("description");
-  p.textContent = canapé.description;
+  p.textContent = sofa.description;
 
   return p;
 }
 
 /*********** AJOUT COULEUR DU PRODUIT ***********/
 // Ajouter la couleur du canapé commandé
-function addColors(canapé) {
+function addColors(sofa) {
   // Constante pour afficher la couleur du canapé
   const colorsSelect = document.getElementById("colors");
   // Ajout d'une condition si le select est null
-  canapé.colors.forEach((color) => {
+  sofa.colors.forEach((color) => {
     const option = document.createElement("option");
     option.value = color;
     option.textContent = color;

@@ -14,6 +14,7 @@ function retrieveOrderId() {
   return urlParams.get("orderId");
 }
 
+
 // Affichage de l'id de la commande
 function showOrderId(orderId) {
   //Sélectionner l'id de l'orderId
