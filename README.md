@@ -102,5 +102,48 @@ Frank
 
 * Un document PDF du plan de test.
 
+---- 
 
+DEUXIEME PASSAGE SOUTENANCE : 
 
+Compétences évaluées
+
+1. Créer un plan de test pour une application
+
+Validé
+
+Commentaires : Plan de tests préalablement validé, bonnes explications sur la méthode employée.
+
+2. Valider des données issues de sources externes
+
+Validé
+
+Commentaires : Tout a été amélioré. Sarah a souhaité ajouter un ou deux messages popup supplémentaires placés de façon judicieuse dans l'application pour améliorer l'expérience utilisateur.
+
+3. Interagir avec un web service avec JavaScript
+
+Validé
+
+Commentaires : Les explications du fonctionnement de fetch et des promesses sont nettement améliorées. Même si c'est encore "frais", Sarah a bien mieux su expliquer le mécanisme.
+
+4. Gérer des événements JavaScript
+
+Validé 
+
+Commentaires : Les probèmes révélés lors de la première version ont été corrigés. Sarah a clairement expliqué les corrections apportées. Le site fonctionne maintenant totalement correctement et de façon sécurisée pour la partie front.
+
+Livrable
+
+Points forts : Le découpage en fonction est toujours présent, cette bonne pratique a été parfaitement intégrée par Sarah. Le code est bien documenté (fourni). La méthode getElementById() a été bien plus utilisée.
+
+Axes d'amélioration : 
+
+- mélange français / anglais et caractères accentués dans les noms des fonctions, il vaut mieux utiliser l'anglais et pas d'accent.
+- nom de certaines variables pas explicites, attention à ce qu'il le soit plus
+- les expressions régulières sont encore dupliquées mais Sarah a refactorisé son code. Voir à utiliser une fonction qui regrouperait les tests avec les infos à vérifier et les modèles à appliquer passés en arguments.
+
+Soutenance
+
+Remarques : Bien meilleure soutenance de Sarah. Elle a été mieux "structurée", Sarah était plus claire dans ses explications, on sentait mieux la compréhension des mécanismes dans son propos. 
+
+Je "salue" de façon globale les améliorations portées par Sarah sur cette deuxième version du projet.
