@@ -1,138 +1,101 @@
-/*********************************** PARTIE PRODUCT *************************************/
+//récupérer API //Création d’un lien entre les produits de la page d’accueil et de la produit 
 
-//Redirection de l'URL des canapés vers la page panier
-let productId = new URL(window.location.href).searchParams.get("id");
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const id = urlParams.get('id');
+//console.log(id);
+let product = {};
+let globalPrice = 0;
+// fetch englobant la promesse.
 
-/******** FETCH ********/ 
-// Permet de faire du JS de façon asynchrone : demande de recherche de donnée
-// URL DE NOTRE API
-fetch("http://localhost:3000/api/products/" + productId)
-  // .then : récupère une promesse, qui va nous donner des données, (une réponse : ((res))
-  .then((res) => res.json())
-  //Affichage et récupération des produits via la fonction "showSofa"
-  .then((sofa) => showSofa(sofa));
+fetch('http://localhost:3000/api/products/' + id)
+  //La méthode then() renvoie un objet Promise en attente de résolution // sera appelé d'une facon Asynchrone
+  .then(
 
-// Création de la fonction globale pour ajouter les canapés sur la page produit
-function showSofa(sofa) {
-  // Récupérer des éléments du produit
-  // AFFICHAGE DES ATTRIBUTS DES CANAPES (IMAGE, NOM DU PRODUIT, PRIX, DESCRIPTION, IMAGE, ETC)
-  imgUrl = sofa.imageUrl;
-  altText = sofa.altTxt;
-  productName = sofa.name;
-  addDivImg(sofa);
-  addTitle(sofa);
-  addPrice(sofa);
-  addDescription(sofa);
-  addColors(sofa);
-}
+    function (response) {
+      if (response.status !== 200) {
+        console.log('Looks like there was a problem. Status Code: ' +
+          response.status);
+        return;
+      }
 
-/*********** AFFICHAGE DE L'IMAGE ***********/
-// Création de la fonction pour ajouter l'image des canapés
-function addDivImg(sofa) {
-  const divImg = document.querySelector(".item__img");
-  const img = document.createElement("img");
-  img.src = sofa.imageUrl;
-  img.alt = sofa.altTxt;
-  divImg.appendChild(img);
+      // Examine the text in the response
+      response.json().then(function (data) {
+        console.log('product: ', data);
+        product = data;
+        //exemple en deux étape // Appel By ID dans le document 
+        let price = document.getElementById('price');
+        price.textContent = data.price;
+        globalPrice = data.price;
+        //exemple en une étape
+        document.getElementById('title').textContent = data.name;
+        document.getElementById('description').textContent = data.description;
+        let colorsElement = document.getElementById('colors');
+        data.colors.forEach(color => {
+          let option = colorsElement.appendChild(document.createElement('option'));
+          option.textContent = color;
+        })
+        let img = document.querySelector(".item__img");
+        img.innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
 
-  return divImg;
-}
+      });
 
-
-/*********** AJOUT NOM DU PRODUIT ***********/
-// Création de la fonction pour ajouter le nom des canapés
-function addTitle(sofa) {
-  // Constante pour afficher le titre du sofa
-  const h1 = document.getElementById("title");
-  h1.textContent = sofa.name;
-
-  return h1;
-}
-
-
-/*********** AJOUT PRIX DU PRODUIT ***********/
-// Ajouter le prix des canapés
-function addPrice(sofa) {
-  // Constante pour afficher le prix du canapé
-  const price = document.getElementById("price");
-  price.textContent = sofa.price;
-
-  return price;
-}
-
-/*********** AJOUT DESCRIPTION DU PRODUIT ***********/
-// Ajouter la description des canapés
-function addDescription(sofa) {
-  // Constante pour afficher la description du canapé
-  const p = document.getElementById("description");
-  p.textContent = sofa.description;
-
-  return p;
-}
-
-/*********** AJOUT COULEUR DU PRODUIT ***********/
-// Ajouter la couleur du canapé commandé
-function addColors(sofa) {
-  // Constante pour afficher la couleur du canapé
-  const colorsSelect = document.getElementById("colors");
-  // Ajout d'une condition si le select est null
-  sofa.colors.forEach((color) => {
-    const option = document.createElement("option");
-    option.value = color;
-    option.textContent = color;
-    colorsSelect.appendChild(option);
+    }
+  )
+  .catch(function (err) {
+    console.log('Fetch Error :-S', err);
   });
-}
 
-/**********************ADD TO CART******************** */
+//HTML element  : pour ajouter les produits dans le panier 
+const toCartBtn = document.getElementById("addToCart");
+// créer un evenement clic pour ajouter les produits 
+toCartBtn.addEventListener("click", () => {
+  const color = document.querySelector('#colors').value;
+  const qty = parseInt(document.querySelector('#quantity').value);
 
-// Constante qui va lire les des données et les envoyées vers la page panier au click
-const button = document.getElementById("addToCart");
-button.addEventListener("click", clickToOrder);
-
-function clickToOrder() {
-  const color = document.getElementById("colors").value;
-  const quantity = document.getElementById("quantity").value;
-  //Si c'est invalide : message d'erreur
-  if (orderNotValid(color, quantity)) return;
-  addToCard(color, quantity);
-  window.location.href = "cart.html";
-}
-
-// Fonction qui retourne vrai si une seule des conditions est remplie, color = 0, quantité = 0
-function orderNotValid(color, quantity) {
-  //Si aucune couleur ou quantité n'est choisie
-  if (color == "" || color == null || quantity == null || quantity < 1) {
-    alert("Choisissez une quantité entre 1 et 100, et une couleur");
-    return true;
-  }
-}
-
-/*********** AJOUTER AU CART LES ELEMENTS DU PRODUIT ***********/
-
-//Quand le client est sur la partie "COMMANDE"
-// Infos du canapés s'affiche
-function addToCard(color, quantity) {
-  const id = `${productId}-${color}`;
-  const value = {
-    id: productId,
-    color: color,
-    quantity: Number(quantity),
-    imageUrl: imgUrl,
-    altTxt: altText,
-    name: productName,
-  };
-  //Conditions d'ajout de la nouvelle quantité lorsque l'utilisateur...
-  //...choisi un autre canapé (couleur identique au précédent)
-  if (localStorage.getItem(id) == null) {
-    localStorage.setItem(id, JSON.stringify(value));
+  //
+  console.log(qty);
+  //condition pour bloquer le passage à la page produit si l personne n'a pas incrémenté la qty   
+  if (qty <= 0 || !qty) {
+    alert("Veuillez incrémenter la quantité du produit");
+  } else if (qty >= 100) {
+    alert("Veuillez décrementer la quantité du produit");
+  } else if (color === "") {
+    alert("Veuillez choisir la couleur");
   } else {
-    //L'ancienne quantité est stringifiée et stocker dans le localStorage
-    const oldQuantity = JSON.parse(localStorage.getItem(id));
-    //ENSUITE..
-    //...On calcule a nouvelle quantité en l'ajoutant à l'ancienne (oldQuantity)
-    oldQuantity.quantity += Number(quantity);
-    //Et on la re-stringfiy et on la stock dans le localStorage
-    localStorage.setItem(id, JSON.stringify(oldQuantity));
+    const buy = {
+      _id: product._id,
+      color: color,
+      qty: qty,
+    };
+    addProduct(buy);
+    window.location.href = "./cart.html";
   }
+});
+// créaton d'un Array depuis ID et stocker les donner 
+function addProduct(product) {
+  let products = [];
+  product.price = null;
+  if (localStorage.getItem('products')) {
+    products = JSON.parse(localStorage.getItem('products'));
+    const productIndex = products.findIndex((pro) => product._id === pro._id && product.color === pro.color);
+    if (productIndex > -1) {
+      products[productIndex].qty = parseInt(products[productIndex].qty);
+      products[productIndex].qty += parseInt(product.qty);
+    }
+    else
+      products.push(product);
+  }
+  else
+    products.push(product);
+  localStorage.setItem('products', JSON.stringify(products)); // stringfy prend un objet est transforme en une chaine de caractère 
 }
+
+// récuoérer la quantité 
+const quantity = document.getElementById("quantity");
+// créer un évenement pour changer le prix et la quantité  
+quantity.addEventListener("change", () => {
+  const price = document.getElementById("price");
+  price.innerHTML = globalPrice * quantity.value;
+});
+///fin 
