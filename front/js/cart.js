@@ -1,6 +1,5 @@
-//cart = panier 
-//localStorage est une API qui existe dans les navigateurs pour permettre d'enregister des donnés 
-// Récupérer les infos envoyées dans le panier (transformé de JSON en objet JS et stocké dans le navigateur)
+//LelocalStorage est une API qui existe dans les navigateurs pour permettre d'enregister des donnés 
+// On récupère les infos envoyées dans le panier (transformé de JSON en objet JS et stocké dans le navigateur)
 const productListData = [];
 function getProducts() {
   let productsList = [];
@@ -44,16 +43,15 @@ function getProducts() {
   }
   return productsList;
 }
-//______déclaration des varaibles liées à la quantité et pau prix______ 
+
+//Variables pour la quantité et le prix total
+
 let index = 0;
 let totalPrice = 0;
 let totalCart = 0;
 let totalQty = 0;
 let productsList = getProducts();
-//console.log(productsList);
-//console.log('totalcart',totalCart);
-//console.log(productsList);
-// création d'une foction pour supprimer l'article 
+
 function suppprod(index) {
   console.log("index:" + index + " productsList[index]: " + productsList[index]);
   // La méthode splice() modifie le contenu d'un tableau en retirant des éléments et/ou en ajoutant de nouveaux éléments à même le tableau
@@ -113,7 +111,7 @@ function listenerInput(product) {
     }
   })
 }
-// contruire le DOM Html d'un prduit 
+// Construire et afficher DOM Html d'un prduit 
 function makeCartProductHtml(data, index, product) {
 
   return `<article class="cart__item" data-id=${data._id} data-color=${product.color}>
@@ -139,7 +137,7 @@ function makeCartProductHtml(data, index, product) {
 </article> `
 }
 
-// firstName
+// REGEXs
 
 function validateEntry(input) {
 
@@ -152,7 +150,7 @@ function validateEntry(input) {
     return false;
   }
 }
-// contact email 
+// Email
 function ValidateEmail(input) {
 
   const validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -169,7 +167,7 @@ const order = document.getElementById('order');
 order.addEventListener("click", (e) => {
   let validContact = true;
 
-  //fisrtName
+  //fPrénom
   if (validateEntry(document.getElementById("firstName")) === false) {
     validContact = false
 
@@ -177,7 +175,7 @@ order.addEventListener("click", (e) => {
   } else {
     document.getElementById("firstNameErrorMsg").innerText = "";
   }
-  //lastName 
+  //Nom 
   if (validateEntry(document.getElementById("lastName")) === false) {
     validContact = false
     document.getElementById("lastNameErrorMsg").innerText = "le nom n'est pas valide";
@@ -193,7 +191,7 @@ order.addEventListener("click", (e) => {
     document.getElementById("addressErrorMsg").innerText = "";
   }
 
-  //Ville /city
+  //Ville 
   if (validateEntry(document.getElementById("city")) === false) {
     validContact = false
     document.getElementById("cityErrorMsg").innerText = "la ville n'est pas valide";
@@ -201,7 +199,7 @@ order.addEventListener("click", (e) => {
     document.getElementById("cityErrorMsg").innerText = "";
   }
 
-  //email
+  //Email
   if (ValidateEmail(document.getElementById("email")) === false) {
     validContact = false;
     document.getElementById("emailErrorMsg").innerText = "email invalide";
@@ -233,15 +231,12 @@ order.addEventListener("click", (e) => {
       })
     })
       .then(
-
         function (response) {
           if (response.status !== 201) {
             console.log('Looks like there was a problem. Status Code: ' +
               response.status);
             return;
           }
-
-          // Examine the text in the response
           response.json().then(function (data) {
             window.location.href = "./confirmation.html?order=" + data.orderId;// passer à la page confirmation.html
             console.log('confirmation: ', data);
@@ -255,8 +250,5 @@ order.addEventListener("click", (e) => {
   } else {
     validContact = true;
   }
-  // pour ne pas refraichir la page 
-
   e.preventDefault();
 });
-//////fin 

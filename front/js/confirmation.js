@@ -1,7 +1,6 @@
-// pour récuprére les paramétres 
+// Récupérer les paramétres 
 const urlParam = new URLSearchParams(window.location.search);
 const orderId = urlParam.get("order");
 console.log(orderId);
-// Pour insérer le ID dans le HTML 
+// Insérer l'ID dans l'URL HTML
 document.getElementById("orderId").innerText = orderId;
-/////fin 

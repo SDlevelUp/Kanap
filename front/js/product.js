@@ -55,7 +55,7 @@ toCartBtn.addEventListener("click", () => {
 
   //
   console.log(qty);
-  //condition pour bloquer le passage à la page produit si l personne n'a pas incrémenté la qty   
+  //condition pour bloquer le passage à la page produit si aucune couleur ni quantité n'est choisie  
   if (qty <= 0 || !qty) {
     alert("Veuillez incrémenter la quantité du produit");
   } else if (qty >= 100) {
@@ -91,11 +91,10 @@ function addProduct(product) {
   localStorage.setItem('products', JSON.stringify(products)); // stringfy prend un objet est transforme en une chaine de caractère 
 }
 
-// récuoérer la quantité 
+// On récupère la quantité
 const quantity = document.getElementById("quantity");
 // créer un évenement pour changer le prix et la quantité  
 quantity.addEventListener("change", () => {
   const price = document.getElementById("price");
   price.innerHTML = globalPrice * quantity.value;
 });
-///fin 
